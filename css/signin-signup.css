@@ -9,17 +9,17 @@
 
 @font-face {
     font-family: 'Raleway-Bold';
-    src: url("../font/Raleway-Bold.ttf") format("truetype");
+    src: url("/font/Raleway-Bold.ttf") format("truetype");
 }
 
 @font-face {
     font-family: 'Raleway-Light';
-    src: url("../font/Raleway-Light.ttf") format("truetype");
+    src: url("/font/Raleway-Light.ttf") format("truetype");
 }
 
 @font-face {
     font-family: 'Raleway-Regular';
-    src: url("../font/Raleway-Regular.ttf") format("truetype");
+    src: url("/font/Raleway-Regular.ttf") format("truetype");
 }
 
 body {
@@ -47,8 +47,12 @@ button{
     margin-bottom: 5px;
 }
 button:hover{
-    background-color: #f0f0f0;
+    background-color: #818CEE;
+    color: #fff;
     border-radius: 10px;
+}
+button:hover button svg{
+    color: #fff;
 }
 .body-all {
     min-height: 100vh;
@@ -107,14 +111,16 @@ button:hover{
 .bg-grey-dark {
     background: #f0f0f0;
 }
-
+.bg-white{
+    background-color: #fff;
+}
 p {
     margin-bottom: 0rem !important;
 }
 
 /* TEXT COLOR */
 .text-lightblue {
-    color: #5ECCF1;
+    color: #818CEE !important;
 }
 
 .text-grey {
@@ -150,7 +156,9 @@ p {
     flex: 0 0 50px;
     align-self: stretch;
 }
-
+aside span, aside svg {
+    color: #fff;
+}
 .main .slider.move-right {
     transform: translateX(calc(-50% + 25px))
 }
@@ -187,6 +195,7 @@ p {
 
 .signup-tab {
     max-width: 50px ;
+    background-color: #818CEE;
 }
 
 .form-input-area {
@@ -242,13 +251,13 @@ p {
     width: 15px;
     height: 15px;
     position: relative;
-    border: solid 1px #5eccf1;
+    border: solid 1px #818CEE;
     border-radius: 1px;
 }
 
 .custom-checkbox input:checked + label::after {
     content: '';
-    background-color: #5eccf1;
+    background-color: #818CEE;
     position: absolute;
     left: 2px;
     top: 2px;
@@ -342,7 +351,7 @@ input[type="checkbox"],
 }
 
 .success-body {
-    background: #5ECCF1;
+    background: #818CEE;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -394,7 +403,7 @@ input[type="checkbox"],
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 3px solid #5ECCF1;
+    border: 3px solid #818CEE;
     border-radius: 50%;
 }
 .wel-msg p {

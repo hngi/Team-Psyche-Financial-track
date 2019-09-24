@@ -1,0 +1,64 @@
+@import url('https://fonts.googleapis.com/css?family=Lato|Pacifico|Righteous|Roboto+Condensed|Ubuntu&display=swap');
+
+body {
+    padding: 0%;
+    margin: 0%;
+    font-family: 'Lato';
+}
+
+header {
+    background-color: #ffffff;
+}
+.navbar{
+    padding: 0rem 1rem !important;
+}
+.navbar-brand {
+    font-family: Poppins;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 40px;
+    color: #3E64FF !important;
+    margin-left: 0;
+}
+
+img {
+    height: 65px;
+    width: 200px;
+    margin-left: 3px;
+}
+
+.nav-link {
+    font-size: 17px;
+    margin: 15px;
+    color: #727fff !important;
+    font-family: 'Poppins';
+}
+
+.nav-link:hover {
+    color: #3E64FF !important;
+}
+
+.active .nav-link {
+    color: #3E64FF !important;
+}
+
+.menu-right-btn {
+    padding: 13px 40px;
+    /* margin-right: 30%; */
+    margin-left: 5px;
+    background-color: transparent;
+    transition-property: all 300ms ease-in;
+}
+
+.menu-right-btn:hover {
+    color: white;
+    background-color: #3E64FF;
+}
+.signin-btn{
+    color: #727fff !important;
+    border: 1px solid #727fff !important;
+}
+.signup-btn{
+    color: #ffffff !important;
+    background-color: #727fff !important;
+}
