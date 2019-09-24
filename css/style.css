@@ -51,8 +51,8 @@ img {
 }
 
 .menu-right-btn:hover {
-    color: white;
-    background-color: #3E64FF;
+    color: white !important;
+    background-color:#727fff ;
 }
 .signin-btn{
     color: #727fff !important;
@@ -61,4 +61,7 @@ img {
 .signup-btn{
     color: #ffffff !important;
     background-color: #727fff !important;
+}
+.border-info{
+    border-color: #727fff !important;
 }
