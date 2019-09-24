@@ -1,25 +1,182 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-    <link rel="stylesheet" href="/css/dashboard.css">
-</head>
-<body>
-    <!-- HEADER STRTS HERE -->
+  <head>
 
-    <!-- HEADER ENDS HERE -->
+    <title>Finance Tracker</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!-- LEFT SIDE NAV STARTS HERE  -->
-
-    <!-- LEFT SIDE NAV ENDS HERE  -->
-
-    <!-- DASHBOARD STARTS HERE STARTS HERE  -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Poppins&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro&display=swap" rel="stylesheet">
     
+    <link rel="stylesheet" href="css/dashboard.css">
+  </head>
 
-    <!-- DASHBOARD ENDS HERE STARTS HERE  -->
-</body>
-<script src="/js/dashboard.js"></script>
+  <body>
+
+        <div class="top">
+            
+        </div><!--end of .top-->
+
+        <div class="container">
+
+            <div class="cat-aside">
+
+                <div class="col-2">
+                    <h4>Categories</h4>
+                    <div class='cat-list'>
+                        <p>All Expenses</p>
+                        <ul>
+                            <li><a href="#">Feeding</a></li>
+                            <li><a href="#">Shopping</a></li>
+                            <li><a href="#">Transport</a></li>
+                        </ul>
+                    </div><!--end of .cat-list-->
+                </div><!--end of .col-2-->
+
+            </div><!--end of .cat-aside-->
+            
+            <div class="main-content">
+                <div class="row row1">
+
+                    <div class='col-12'>
+                        <div class="card-deck pack-cards">
+                            <div class="card">
+                                <p class="card-title">Total Expenses</p>
+                                <p class="card-subtitle">500k</p>
+                                <p class="card-text">NGN</p>
+                            </div>
+                            
+                            <div class="card">
+                                <p class="card-title">Weekly Expenses</p>
+                                <p class="card-subtitle">1,300.98</p>
+                                 <p class="card-text">NGN</p>
+                            </div>
+                            
+                            <div class="card">
+                                <p class="card-title">Monthly Expenses</p>
+                                <p class="card-subtitle">20,582.23</p>
+                                <p class="card-text">NGN</p>
+                            </div>
+                            
+                            <div class="card">
+                                <p class="card-title">Annual Expenses </p>
+                                <p class="card-subtitle">120k</p>
+                                <p class="card-text">NGN</p>
+                            </div>
+                            
+                        </div><!--end of .card-deck-->
+            
+                    </div><!--end of .col-12-->
+                </div><!--end of first row in .main-content-->
+
+                <div class="row row2">
+                    <div class="col-8">
+                        <div class='tbl-header'>
+                            <div class="tbl-text">
+                                <p class="first">Todays Expenses</p>
+                                <p class="second">These are the expenses you've made for today</p>
+                            </div>
+                            <div class="tbl-img">
+                                <!-- <a href="#" onclick="addNewExpenses()"></a>-->
+                                <img class="img-add" id="new-expenses" src="assets/images/add.png">
+                            </div>
+                        </div>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Amount (NGN)</th>
+                                    <th>Description</th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Breakfast</td>
+                                    <td class="blue">540.00</td>
+                                    <td>Today</td>
+                                    <td><img src="assets/images/mdi_edit.png"></td>
+                                    <td><img src="assets/images/vector.png"></td>
+                                </tr>
+                                <tr>
+                                    <td>New Clothing</td>
+                                    <td class="blue">7400.00</td>
+                                    <td>Today</td>
+                                    <td><img src="assets/images/mdi_edit.png"></td>
+                                    <td><img src="assets/images/vector.png"></td>
+                                </tr>
+                                <tr>
+                                    <td>Transport to Work</td>
+                                    <td class="blue">540.00</td>
+                                    <td>Today</td>
+                                    <td><img src="assets/images/mdi_edit.png"></td>
+                                    <td><img src="assets/images/vector.png"></td>
+                                </tr>   
+                                <tr>
+                                    <td>Cinema Expenses</td>
+                                    <td class="blue">5140.00</td>
+                                    <td>Today</td>
+                                    <td><img src="assets/images/mdi_edit.png"></td>
+                                    <td><img src="assets/images/vector.png"></td>
+                                </tr>  
+                                <tr>
+                                    <td>New iPhone</td>
+                                    <td class="blue">540.00</td>
+                                    <td>Today</td>
+                                    <td><img src="assets/images/mdi_edit.png"></td>
+                                    <td><img src="assets/images/vector.png"></td>
+                                </tr>                                                           
+                            </tbody>
+                        </table>
+                    </div><!--end of first column in .row2-->
+
+                    <div id="show-expense-tbl" class="col-4">
+                        <div class="expenses-text">
+                            <p class="first">Add expenses</p>
+                            <p class="second">When you spend money add it the expense here today</p>
+                        </div><!--end of heading text-->
+
+                        <form action="">
+                            <div class="form-group">
+                                <label for="expenditure">EXPENDITURE</label>
+                                <input type="text" class="form-control" id="expenditure" placeholder="Lunch" name="expenditure">
+                            </div><!--end of EXPENDITURE form-group-->
+                            <div class="form-group">
+                                <label for="description">DESCRIPTION</label>
+                                <textarea class="form-control" rows="4" id="description"></textarea>
+                            </div><!--end of DESCRIPTION form-group-->
+
+                            <p class="min-char">Minimum Characters: 40</p> 
+
+                            <div class="form-group">
+                                <label for="price">PRICE</label>
+                                <div class="input-group mb-3 input-group-sm">
+                                    <div class="input-group-prepend">
+                                      <span class="input-group-text">NGN</span>
+                                   </div>
+                                   <input type="number" class="form-control" id="price" placeholder=5,3556.00 name="price">
+                                 </div>
+                            </div><!--end of PRICE form-group-->
+
+                            <div class="btns">
+                                <button type="submit" class="btn btn-primary btn-block btn1">SAVE</button>
+                                <a class="btn btn-primary btn-block btn2" id="btnReset">RESET</a>
+                            </div><!--end of .btns-->
+
+                        </form>
+                        
+                    </div><!--end of second column in .row2-->
+
+                </div><!--end of second row in .main-content-->
+        
+            </div><!--end of .main-content-->
+            
+            
+        </div><!--end of .container-->
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="js/script.js" type="text/javascript"></script>
+  </body>
 </html>

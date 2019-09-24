@@ -1,0 +1,153 @@
+body{
+    background: #eaeaea;
+    font-family: 'Poppins', sans-serif;
+}
+.top{
+    height: 194px;
+    background: #818CEE;
+    background-image: url("../assets/images/header_mask.png");
+}
+/* end of styles for .top */
+
+.container{
+    max-width: 1440px;
+}
+.cat-aside{
+    float: left;
+    margin-top: 85px;
+}
+h4{
+    font-size: 24px;
+    margin-bottom: 15px;
+}
+.cat-list p{
+    background: linear-gradient(270deg, #3E64FF 20.25%, #C8CDFF 87.25%);
+    border-radius: 30px;
+    color: #fff;
+    width: 212px;
+    height: 48px;
+    font-size: 18px;
+    padding: 9px 28px 9px 43px;
+}
+li{
+    list-style-type: none;
+    margin-top: 24px;
+}
+li a{
+    color: #000;
+}
+
+
+
+/* styles for .row1 in .main-content */
+.row1{
+    
+}
+.pack-cards{
+    margin-top: -81px;
+}
+.card{
+    width: 252px;
+    height: 140px;
+    border-radius: 14px;
+    padding: 10px;
+}
+.card-title{
+    color: rgba(0,0,0,0.5);
+    font-size: 18px;
+}
+.card-subtitle{
+    color: rgba(0,0,0);
+    font-size: 35px;
+}
+.card-text{
+    color: #3779DC;
+    font-size: 23px;
+}
+
+
+/* styles for table and contents */
+.row2{
+    margin-top: 30px;
+}
+.col-8{
+    background: #fff;
+    border-radius: 14px;
+    max-width: 62%;
+    margin-left: 20px;
+}
+.tbl-text {
+    float: left;
+}
+.first{
+    font-size: 26px;
+    padding-top: 8px;
+}
+.second{
+    color: rgba(0,0,0,0.6);
+    font-size: 14px;
+    margin-top: -20px;
+}
+.tbl-img{
+    float: right;
+}
+.img-add:hover{
+    cursor:pointer;
+}
+.table{
+    clear: both;
+    width: 100%;
+    font-size: 18px;
+}
+.blue{
+    color: #3E64FF;
+    font-weight: bold;
+}
+
+
+/* style for .col-4 and form*/
+.col-4{
+    background: #fff;
+    max-width: 33%;
+    margin-left: 20px;
+    border-radius: 14px;
+    padding-bottom: 20px;
+    margin-bottom: 5px;
+}
+.form-group{
+    margin-bottom: 20px;
+}
+.min-char{
+    float: right;
+    font: "Source Sans Pro";
+    font-size: 12px;
+    margin-top: -12px;
+}
+.input-group{
+    height: 40px;
+    border-radius: 10px;
+}
+.input-group-text{
+    color: #5089E1;
+}
+.input-group input{
+    text-align: right;
+}
+
+button, #btn2{
+    margin-bottom: 13px;
+    height: 51.32px;
+}
+.btn1{
+    background: linear-gradient(270deg, #3E64FF 20.25%, #C8CDFF 87.25%);
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 12px;
+}
+.btn2{
+    color: #828282;
+    background: #fff;
+    text-align: center;
+    border: 1px solid #828282;
+    box-sizing: border-box;
+    border-radius: 12px;
+}
