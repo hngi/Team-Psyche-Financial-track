@@ -15,10 +15,11 @@ class ItemResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'name' => $this->name,
-            'price' => $this->price,
-            'description' => $this->description,
-            'created_by' => UserResource::collection($this->user),
+            'id' => (int) $this->id,
+            'name' => (string) $this->name,
+            'price' => (string) $this->price,
+            'description' => (string) $this->description,
+            'created_by' => new UserResource($this->user),
             'created_at' => $this->created_at,
         ];
     }

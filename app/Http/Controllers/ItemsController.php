@@ -17,7 +17,14 @@ class ItemsController extends Controller
     {
         // $page = $request->has('page') ? $request->query('page') : 1;
         $items = Item::orderBy('created_at', 'desc')->paginate(10);
-        return ItemResource::collection($items);
+        if ($items) {
+            return ItemResource::collection($items);
+        } else {
+            return response()->json([
+                'message' => 'Items not created',
+            ], 404);
+        }
+
     }
 
     /**
@@ -41,10 +48,11 @@ class ItemsController extends Controller
         //Validate Request params
         $data = $request->validate([
             'name' => ['required', 'string'],
-            'price' => ['required', 'string'],
+            'price' => ['required', 'regex:/^\d+(\.\d{1,2})?$/'],
             'description' => ['required', 'string'],
+            'user_id' => ['required', 'integer'],
         ]);
-        $item = Item::create($request);
+        $item = Item::create($data);
 
         if ($item) {
             return new ItemResource($item);
@@ -63,8 +71,14 @@ class ItemsController extends Controller
      */
     public function show($id)
     {
-        $item = Item::whereId($id)->first();
-        return new ItemResource($item);
+        if ($item = Item::whereId($id)->first()) {
+            return new ItemResource($item);
+        } else {
+            return response()->json([
+                'message' => 'Item not found',
+            ], 404);
+        }
+
     }
 
     /**
@@ -90,12 +104,16 @@ class ItemsController extends Controller
         //Validate Request params
         $data = $request->validate([
             'name' => ['required', 'string'],
-            'price' => ['required', 'string'],
+            'price' => ['required', 'regex:/^\d+(\.\d{1,2})?$/'],
             'description' => ['required', 'string'],
+            'user_id' => ['required', 'integer'],
         ]);
 
-        if ($item = Item::whereId($id)->first() && $item->update($data)) {
-            return new EducationResource($education);
+        if ($item = Item::whereId($id)->first()) {
+            if ($item->update($data)) {
+                return new ItemResource($item);
+            }
+
         } else {
             return response()->json([
                 'message' => 'Item not found',
