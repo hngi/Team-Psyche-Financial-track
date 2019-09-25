@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\ItemResource;
 use App\Item;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class ItemsController extends Controller
@@ -76,6 +77,74 @@ class ItemsController extends Controller
         } else {
             return response()->json([
                 'message' => 'Item not found',
+            ], 404);
+        }
+
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function showWeeklyItems()
+    {
+        if ($items = Item::whereBetween('created_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])->paginate(10)) {
+            return ItemResource::collection($items);
+        } else {
+            return response()->json([
+                'message' => 'Item not found',
+            ], 404);
+        }
+
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function showMonthlyItems(Request $request, $month = null)
+    {
+        $item = null;
+        if ($month) {
+            $items = Item::whereMonth('created_at', '=', Carbon::parse($month)->month)->paginate(10);
+        } else {
+            $items = Item::where('created_at', '>=', Carbon::now()->subMonth())->paginate(10);
+        }
+
+        if ($items) {
+            return ItemResource::collection($items);
+        } else {
+            return response()->json([
+                'message' => 'Item not found',
+            ], 404);
+        }
+
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function showYearlyItems($year = null)
+    {
+        $item = null;
+        if ($year) {
+            $items = Item::whereYear('created_at', '=', $year)->paginate(10);
+        } else {
+            $items = Item::where('created_at', '>=', Carbon::now()->year)->paginate(10);
+        }
+
+        if ($items) {
+            return ItemResource::collection($items);
+        } else {
+            return response()->json([
+                'message' => 'Items not found',
             ], 404);
         }
 
