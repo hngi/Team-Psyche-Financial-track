@@ -2,9 +2,11 @@ body{
     background: #eaeaea;
     font-family: 'Poppins', sans-serif;
 }
+
 .top{
     height: 194px;
     background: #818CEE;
+    background-size: cover;
     background-image: url("../assets/images/header_mask.png");
 }
 /* end of styles for .top */
@@ -48,9 +50,8 @@ li a{
 }
 .card{
     width: 252px;
-    height: 140px;
     border-radius: 14px;
-    padding: 10px;
+    padding: 1rem 1rem;
 }
 .card-title{
     color: rgba(0,0,0,0.5);
