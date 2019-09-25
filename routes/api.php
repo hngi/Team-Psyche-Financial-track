@@ -17,6 +17,7 @@ Route::group(['prefix' => 'v1'], function () {
     Route::get('verify/{token}', 'UsersController@verify')->name('verify');
     Route::get('users', 'UsersController@all')->name('users');
     Route::get('users/{id}', 'UsersController@find')->name('users');
+    Route::resource('items', 'ItemsController');
 
     Route::group(['middleware' => 'auth:api'], function () {
 
