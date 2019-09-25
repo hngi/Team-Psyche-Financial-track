@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ItemResource;
+use App\Item;
 use Illuminate\Http\Request;
 
 class ItemsController extends Controller
@@ -11,9 +13,11 @@ class ItemsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        // $page = $request->has('page') ? $request->query('page') : 1;
+        $items = Item::orderBy('created_at', 'desc')->paginate(10);
+        return ItemResource::collection($items);
     }
 
     /**
