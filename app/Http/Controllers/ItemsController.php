@@ -151,17 +151,6 @@ class ItemsController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -175,14 +164,12 @@ class ItemsController extends Controller
             'name' => ['required', 'string'],
             'price' => ['required', 'regex:/^\d+(\.\d{1,2})?$/'],
             'description' => ['required', 'string'],
-            'user_id' => ['required', 'integer'],
         ]);
 
         if ($item = Item::whereId($id)->first()) {
             if ($item->update($data)) {
                 return new ItemResource($item);
             }
-
         } else {
             return response()->json([
                 'message' => 'Item not found',
