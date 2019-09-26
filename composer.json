@@ -59,6 +59,9 @@
             "@php artisan key:generate --ansi"
         ],
         "post-install-cmd": [
+            "composer install --optimize-autoloader --no-dev",
+            "php artisan config:cache",
+            "php artisan route:cache",
             "chmod -R guo+w storage",
             "chmod -R 775 public/"
         ]
