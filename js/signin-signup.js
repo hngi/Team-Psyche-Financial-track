@@ -19,19 +19,20 @@ window.addEventListener("load", () => {
 
     const slide = () => {
         // slider
-        slider.classList.toggle("move-right");
         if (slider.classList.contains('move-right')) { // move-left
+            adjustHeight(signIn);
+            setTimeout(() => {
+                span.innerText ="sign up";
+                chevron.style.transform = 'rotate(90deg)';
+                slider.classList.toggle("move-right");
+            }, 300);
+        } else { // move right
             span.innerText ="sign in";
             chevron.style.transform = 'rotate(270deg)';
+            slider.classList.toggle("move-right");
             setTimeout(() => {
                 adjustHeight(signUp);
             }, 300);
-        } else { // move right
-            setTimeout(() => {
-                adjustHeight(signIn);
-            }, 300);
-            span.innerText ="sign up";
-            chevron.style.transform = 'rotate(90deg)';
         }
     }
     btn.addEventListener("click", slide);
