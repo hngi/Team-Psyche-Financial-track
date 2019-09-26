@@ -2,6 +2,9 @@ body{
     background: #eaeaea;
     font-family: 'Poppins', sans-serif;
 }
+.row{
+    padding:0!important;
+}
 .top{
     height: 194px;
     background: #818CEE;
@@ -9,9 +12,6 @@ body{
 }
 /* end of styles for .top */
 
-.container{
-    max-width: 1440px;
-}
 .cat-aside{
     float: left;
     margin-top: 85px;
@@ -70,11 +70,11 @@ li a{
 .row2{
     margin-top: 30px;
 }
-.col-8{
+.cont{
     background: #fff;
     border-radius: 14px;
-    max-width: 62%;
-    margin-left: 20px;
+    /* max-width: 62%; */
+    /* margin-left: 20px; */
 }
 .tbl-text {
     float: left;
@@ -106,10 +106,10 @@ li a{
 
 
 /* style for .col-4 and form*/
-.col-4{
+.cont4{
     background: #fff;
-    max-width: 33%;
-    margin-left: 20px;
+    /* max-width: 33%; */
+    margin-left:0;
     border-radius: 14px;
     padding-bottom: 20px;
     margin-bottom: 5px;
@@ -151,3 +151,23 @@ button, #btn2{
     box-sizing: border-box;
     border-radius: 12px;
 }
+@media only screen and (max-width: 700px) {
+    .cont{
+        background: #fff;
+        border-radius: 14px;
+        /* max-width: 100%; */
+        margin-left: 20px;
+        width:1200px;
+    }
+    .cont4{
+        background: #fff;
+        /* max-width: 33%; */
+        margin-left:50px;
+        border-radius: 14px;
+        padding-bottom: 20px;
+        margin-bottom: 5px;
+        margin-top:50px;
+        width:1500px;
+
+    }
+  }
