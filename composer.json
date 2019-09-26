@@ -60,8 +60,6 @@
         ],
         "post-install-cmd": [
             "chmod -R guo+w storage",
-            "php artisan optimize",
-            "php artisan cache:clear",
             "chmod -R 775 public/"
         ]
     }
