@@ -7,9 +7,11 @@ body{
 .cover{
     margin-bottom: 2em;
 }
+
 .top{
     height: 194px;
     background: #818CEE;
+    background-size: cover;
     background-image: url("../assets/images/header_mask.png");
     background-repeat: no-repeat;
     max-width: 100%;
@@ -70,7 +72,6 @@ li a:focus{
 }
 .card{
     width: 252px;
-    height: 140px;
     border-radius: 14px;
     padding: 10px;
     -webkit-transition: all 1s ease;
@@ -82,7 +83,8 @@ li a:focus{
 .card:hover {
     height: 150px;
     box-shadow:5px 5px 5px rgba(120, 174, 255, 0.582);
-  }
+    padding: 1rem 1rem;
+}
 .card-title{
     color: rgba(0,0,0,0.5);
     font-size: 18px;

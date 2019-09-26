@@ -4,29 +4,19 @@
     padding: 0;
     margin: 0;
     box-sizing: border-box;
-    font-family: 'Raleway-Bold'
-}
-
-@font-face {
-    font-family: 'Raleway-Bold';
-    src: url("/font/Raleway-Bold.ttf") format("truetype");
-}
-
-@font-face {
-    font-family: 'Raleway-Light';
-    src: url("/font/Raleway-Light.ttf") format("truetype");
-}
-
-@font-face {
-    font-family: 'Raleway-Regular';
-    src: url("/font/Raleway-Regular.ttf") format("truetype");
+    font-family: 'Poppins';
 }
 
 body {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    --text-blue: #727fff;
+    --text-blue-dark:#3E64FF;
+}
 
+.text-blue-dark {
+    color: var(--text-blue-dark);
 }
 
 input,
@@ -47,7 +37,7 @@ button{
     margin-bottom: 5px;
 }
 button:hover{
-    background-color: #818CEE;
+    background-color: var(--text-blue-dark);
     color: #fff;
     border-radius: 10px;
 }
@@ -59,20 +49,16 @@ button:hover button svg{
     display: flex;
     flex-direction: column;
     justify-content: center;
-    background: #E5E5E5;
 }
 
 /* FONTS */
 .raleway-bold {
-    font-family: 'Raleway-Bold';
-}
-
-.raleway-light {
-    font-family: 'Raleway-Light';
+    font-family: 'Poppins';
+    font-weight: bold;
 }
 
 .raleway-regular {
-    font-family: 'Raleway-Regular';
+    font-family: 'Poppins';
 }
 
 /* FONT SIZES */
@@ -120,7 +106,7 @@ p {
 
 /* TEXT COLOR */
 .text-lightblue {
-    color: #818CEE !important;
+    color: var(--text-blue-dark) !important;
 }
 
 .text-grey {
@@ -132,8 +118,10 @@ p {
     margin: 0 auto;
     position: relative;
     overflow: hidden;
+    border-radius: 1rem;
     transition: all .3s ease-out;
-
+    filter: drop-shadow(0 20px 15px #418bff42);
+    height: 0;
 }
 
 /* .main * {
@@ -195,7 +183,7 @@ aside span, aside svg {
 
 .signup-tab {
     max-width: 50px ;
-    background-color: #818CEE;
+    background-color: var(--text-blue-dark);
 }
 
 .form-input-area {
@@ -225,13 +213,12 @@ aside span, aside svg {
     font-weight: 300;
     outline: none !important;
     box-shadow: none !important;
-    font-family: 'Raleway-light';
+    font-family: 'Lato';
 }
 
 .form-input-area input::placeholder {
     color: #888888;
     font-size: 16px;
-    font-family: 'Raleway-regular'
 }
 
 .custom-checkbox {
@@ -251,13 +238,13 @@ aside span, aside svg {
     width: 15px;
     height: 15px;
     position: relative;
-    border: solid 1px #818CEE;
+    border: solid 1px var(--text-blue-dark);
     border-radius: 1px;
 }
 
 .custom-checkbox input:checked + label::after {
     content: '';
-    background-color: #818CEE;
+    background-color: var(--text-blue-dark);
     position: absolute;
     left: 2px;
     top: 2px;
@@ -301,6 +288,7 @@ input[type="checkbox"],
 
 .sign-x-text svg {
     margin-right: 15px;
+    display: inline-block;
     transform: rotate(90deg);
 }
 
@@ -351,7 +339,7 @@ input[type="checkbox"],
 }
 
 .success-body {
-    background: #818CEE;
+    background: var(--text-blue-dark);
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -403,7 +391,7 @@ input[type="checkbox"],
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 3px solid #818CEE;
+    border: 3px solid var(--text-blue-dark);
     border-radius: 50%;
 }
 .wel-msg p {
@@ -416,12 +404,8 @@ input[type="checkbox"],
 /* -------------------------------------MEDIA QUERY--------------------------------------- */
 
 @media screen and (max-width:500px) {
-    .body-all {
-        box-sizing: border-box;
-    }
-
     .main {
-        width: 300px;
+        width: 320px;
     }
 
     .slider section {
@@ -430,7 +414,7 @@ input[type="checkbox"],
     }
 
     .form-area {
-        width: auto;
+        width: 280px;
         padding: 10px 8px;
     }
 }
