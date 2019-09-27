@@ -14,6 +14,7 @@
 Route::group(['prefix' => 'v1'], function () {
     Route::post('login', 'UsersController@login')->name('login');
     Route::post('register', 'UsersController@signup')->name('register');
+    Route::post('logout', 'UsersController@logout')->name('logout');
     Route::get('verify/{token}', 'UsersController@verify')->name('verify');
     Route::get('users', 'UsersController@all')->name('users');
     Route::get('users/{id}', 'UsersController@find')->name('users');

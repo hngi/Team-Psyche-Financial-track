@@ -17,7 +17,9 @@ class ItemsController extends Controller
     public function index(Request $request)
     {
         // $page = $request->has('page') ? $request->query('page') : 1;
-        $items = Item::orderBy('created_at', 'desc')->paginate(10);
+        $items = Item::where('user_id', auth('api')->user()->id)
+            ->orderBy('created_at', 'desc')->paginate(10);
+
         if ($items) {
             return ItemResource::collection($items);
         } else {
