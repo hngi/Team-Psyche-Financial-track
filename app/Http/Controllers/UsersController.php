@@ -148,4 +148,9 @@ class UsersController extends Controller
         return $result;
     }
 
+    public function index()
+    {
+        return view('welcome');
+    }
+
 }
