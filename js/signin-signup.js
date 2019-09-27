@@ -1,102 +1,170 @@
-window.addEventListener("load", () => {
+import { BASE_URL, TOKEN_NAME, trace, log } from "./base.js";
 
-    
-    const signIn = document.getElementById("kc-signIn");
-    const signUp = document.getElementById("kc-signUp");
-    const slider = document.getElementById("mainCont");
-    const mainContent = document.querySelector(".main");
+// MsgBox
+class MessageBox {
+  constructor(element, type = "info") {
+    this.box = element;
+    this.type = type !== "info" ? "#FF8282" : "#5eccf1";
+  }
 
-    function adjustHeight(element) {
-        const theHeight = element.clientHeight + 'px';
-        slider.style.height = theHeight;
-        mainContent.style.height = theHeight;
-    }
+  show(msg = "", delay = 10000) {
+    this.box.textContent = msg;
+    this.box.classList.add("misc");
+    this.box.style.background = this.type;
 
-    adjustHeight(signIn);
-    const btn = document.getElementById("kc-btn");
-    const chevron = btn.querySelector('svg');
-    const span = btn.querySelector('span');
+    setTimeout(() => {
+      this.hide();
+    }, delay);
+  }
 
-    const slide = () => {
-        // slider
-        if (slider.classList.contains('move-right')) { // move-left
-            adjustHeight(signIn);
-            setTimeout(() => {
-                span.innerText ="sign up";
-                chevron.style.transform = 'rotate(90deg)';
-                slider.classList.toggle("move-right");
-            }, 300);
-        } else { // move right
-            span.innerText ="sign in";
-            chevron.style.transform = 'rotate(270deg)';
-            slider.classList.toggle("move-right");
-            setTimeout(() => {
-                adjustHeight(signUp);
-            }, 300);
-        }
-    }
-    btn.addEventListener("click", slide);
-
-    const errorBox = document.getElementById("error-box");
-    if(errorBox){
-        setTimeout(() => {
-            errorBox.style.display ="none";
-        }, 5000);
-    }
-    
-    if(successMsg){
-        setTimeout(() => {
-            successMsg.classList.add("close");
-        }, 5000);
-    }
-})
-
-/* ------------CLOSE WELCOME PAGE------------------ */
-
-
-const successCloseBtn = document.getElementById("successCloseBtn");
-const welcomeCloseBtn = document.getElementById("welcomeCloseBtn");
-
-
-const closePage = (element) => {
-    element.classList.add("close");
+  hide() {
+    this.box.classList.remove("misc");
+  }
 }
 
-successCloseBtn.addEventListener("click" , () => {
-    const successMsg = document.getElementById("successMsg");
-    successMsg.classList.add("close");
-});
-welcomeCloseBtn.addEventListener("click" , () => {
-    const welcomeBody = document.getElementById("welBody");
-    welcomeBody.classList.add("close");
+const msgBox = new MessageBox(document.getElementById("error-box"));
+const errBox = new MessageBox(document.getElementById("error-box"), "error");
+
+class Slider {
+  constructor() {
+    this.signIn = document.getElementById("kc-signIn");
+    this.signUp = document.getElementById("kc-signUp");
+    this.slider = document.getElementById("mainCont");
+    this.mainContent = document.querySelector(".main");
+    this.btn = document.getElementById("kc-btn");
+    this.chevron = this.btn.querySelector("svg");
+    this.span = this.btn.querySelector("span");
+  }
+
+  adjustHeight(name) {
+    const theHeight = this[name].clientHeight + "px";
+    this.slider.style.height = theHeight;
+    this.mainContent.style.height = theHeight;
+  }
+
+  moveLeft() {
+    this.adjustHeight("signIn");
+    setTimeout(() => {
+      this.span.innerText = "sign up";
+      this.chevron.style.transform = "rotate(90deg)";
+      this.slider.classList.toggle("move-right");
+    }, 300);
+  }
+
+  moveRight() {
+    this.span.innerText = "sign in";
+    this.chevron.style.transform = "rotate(270deg)";
+    this.slider.classList.toggle("move-right");
+    setTimeout(() => {
+      this.adjustHeight("signUp");
+    }, 300);
+  }
+
+  toggle() {
+    if (this.slider.classList.contains("move-right")) {
+      this.moveLeft();
+    } else {
+      this.moveRight();
+    }
+  }
+}
+
+window.addEventListener("load", () => {
+  const slider = new Slider();
+  slider.adjustHeight("signIn");
+  slider.btn.addEventListener("click", () => {
+    slider.toggle();
+  });
+
+  const onSuccess = res => {
+    if (res.message === "Unauthorized" || res.errors) {
+      errBox.show("Invalid email/password provided", 5000);
+      throw Error(res.message);
+    }
+    if (res.access_token) {
+      localStorage.setItem(TOKEN_NAME, JSON.stringify(res));
+      window.location = "/dashboard.html";
+    }
+
+    return res;
+  };
+
+  const onFail = trace("An error occured");
+
+  const forms = [
+    {
+      selector: "#signInForm",
+      endpoint: BASE_URL + "/login",
+      fields: ["email", "password"],
+      handlers: [onSuccess, onFail]
+    },
+    {
+      selector: "#signUpForm",
+      endpoint: BASE_URL + "/register",
+      fields: ["name", "email", "password", "password_confirmation"],
+      handlers: [
+        res => {
+          if (res.errors) if (res.errors.email) msgBox.show(res.errors.email);
+
+          if (res.message === "Successfully created user!") {
+            msgBox.show("Account created successfully");
+            slider.moveLeft();
+          }
+        },
+        onFail
+      ]
+    }
+  ];
+
+  const prepareForm = (form, endpoint, fields, handlers) => evt => {
+    evt.preventDefault();
+    const [onSuccess, onFail] = handlers;
+    const getInput = (name, form) => {
+      return form ? form.querySelector(`[name=${name}]`) : { value: "" };
+    };
+    const fieldsObj = new Map(
+      fields.map(e => {
+        return [e, getInput(e, form).value];
+      })
+    );
+    const options = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Requested-With": "XMLHttpRequest"
+      },
+      body: JSON.stringify(Object.fromEntries(fieldsObj))
+    };
+
+    fetch(endpoint, options)
+      .then(res => res.json())
+      .then(onSuccess)
+      .catch(onFail);
+  };
+
+  forms.map(({ selector, handlers, endpoint, fields }) => {
+    const form = document.querySelector(selector);
+    if (form) {
+      const submitForm = prepareForm(form, endpoint, fields, handlers);
+      form.addEventListener("submit", submitForm);
+    }
+  });
 });
 
 /* -----------------------------------INPUT VALIDATION FOR PASSWORD--------------------------------------------------- */
-const mainPassword = document.getElementById('password');
-const confirmPassword = document.getElementById('confirm-password');
-const submitFormBtn = document.getElementById('submit-form');
-const errorBoxUi = document.querySelector('.error-box-x');
+const mainPassword = document.getElementById("password");
+const confirmPassword = document.getElementById("confirm-password");
+const submitFormBtn = document.getElementById("submit-form");
+const errorBoxUi = document.querySelector(".error-box-x");
 
 const passwordMatch = () => {
-    if(mainPassword.value === confirmPassword.value) {
-        submitFormBtn.disabled = false;
-        errorBoxUi.classList.add("misc");
-        errorBoxUi.style.background = '#5eccf1';    
-        errorBoxUi.textContent = "Password match"; 
-    }else {
-        submitFormBtn.disabled = true;
-        errorBoxUi.style.background = "#FF8282";
-        errorBoxUi.classList.add("misc");
-        errorBoxUi.textContent = "Password don't match";
-    }  
-    
-    setTimeout(() => {
-        errorBoxUi.style.display = "none";
-    }, 10000)
-    
-}
+  if (mainPassword.value === confirmPassword.value) {
+    submitFormBtn.disabled = false;
+  } else {
+    submitFormBtn.disabled = true;
+  }
+};
 
 document.querySelectorAll(".x-confirm").forEach(confam => {
-    confam.addEventListener("keyup", passwordMatch);
-})
-
+  confam.addEventListener("keyup", passwordMatch);
+});

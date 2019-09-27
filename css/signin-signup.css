@@ -12,7 +12,7 @@ body {
     padding: 0;
     box-sizing: border-box;
     --text-blue: #727fff;
-    --text-blue-dark:#3E64FF;
+    --text-blue-dark: #3E64FF;
 }
 
 .text-blue-dark {
@@ -31,19 +31,38 @@ input[type="checkbox"] {
     cursor: pointer;
 }
 
-button{
+button {
     padding: 10px;
     transition: ease-in-out .5s;
     margin-bottom: 5px;
 }
-button:hover{
-    background-color: var(--text-blue-dark);
-    color: #fff;
-    border-radius: 10px;
+
+button:hover,
+button:focus {
+    /* background-color: var(--text-blue-dark); */
+    /* color: #fff;
+    border-radius: 10px; */
 }
-button:hover button svg{
-    color: #fff;
+
+button svg {
+    transform: translateX(-10px);
+    opacity: 0;
+    transition: all .3s ease-out;
 }
+
+button:hover svg,
+button:focus svg {
+    opacity: 1;
+    transform: translateX(0);
+}
+ /* 
+button:hover svg path,
+button:focus svg path {
+   stroke: #fff !important; 
+}
+
+*/
+
 .body-all {
     min-height: 100vh;
     display: flex;
@@ -89,6 +108,7 @@ button:hover button svg{
 .r-flex-1 {
     flex: 1;
 }
+
 /* BACKGROUND COLOR CLASSES */
 .bg-grey {
     background: #FDFDFD;
@@ -97,9 +117,11 @@ button:hover button svg{
 .bg-grey-dark {
     background: #f0f0f0;
 }
-.bg-white{
+
+.bg-white {
     background-color: #fff;
 }
+
 p {
     margin-bottom: 0rem !important;
 }
@@ -144,9 +166,12 @@ p {
     flex: 0 0 50px;
     align-self: stretch;
 }
-aside span, aside svg {
+
+aside span,
+aside svg {
     color: #fff;
 }
+
 .main .slider.move-right {
     transform: translateX(calc(-50% + 25px))
 }
@@ -182,7 +207,7 @@ aside span, aside svg {
 }
 
 .signup-tab {
-    max-width: 50px ;
+    max-width: 50px;
     background-color: var(--text-blue-dark);
 }
 
@@ -205,7 +230,7 @@ aside span, aside svg {
 }
 
 .focus-input-area:focus-within {
-    background:#f3ffff;
+    background: #f3ffff;
 }
 
 .form-input-area input {
@@ -242,7 +267,7 @@ aside span, aside svg {
     border-radius: 1px;
 }
 
-.custom-checkbox input:checked + label::after {
+.custom-checkbox input:checked+label::after {
     content: '';
     background-color: var(--text-blue-dark);
     position: absolute;
@@ -261,14 +286,14 @@ input[type="checkbox"],
     padding-bottom: 65px;
 }
 
-.btn-register svg, 
-.login-text{
+.btn-register svg,
+.login-text {
     align-self: center;
     text-transform: uppercase;
     cursor: pointer;
 }
 
-.signup-tab{
+.signup-tab {
     display: flex;
     align-self: stretch;
     /* background-color: yellow; */
@@ -292,35 +317,34 @@ input[type="checkbox"],
     transform: rotate(90deg);
 }
 
-.error-box, .error-box-x {
+.error-box {
     top: calc(0% + 5px);
     right: calc(0% + 5px);
     padding: 17px 28px;
-    position: absolute;
+    position: fixed;
     background: #FF8282;
-}
-
-.error-box-x{
     display: none;
 }
 
-.misc{
+.misc {
     display: block;
 }
+
 /* ----------------------MODALS---------------------------------------------------------- */
-.suc-msg{
+.suc-msg {
     width: 200px;
     padding: 15px;
     background-color: #5ECCF1;
     /* border-radius: 20px; */
     box-shadow: 3px 3px 1px #888888;
-    position:absolute;
+    position: absolute;
     top: 0%;
     left: calc(100% - 220px);
     text-align: center;
     margin-top: 10px;
 }
-#successCloseBtn{
+
+#successCloseBtn {
     cursor: pointer;
 }
 
@@ -369,7 +393,8 @@ input[type="checkbox"],
     background-color: #f0f0f0;
     box-shadow: 3px 3px 10px #000000;
 }
-#close{
+
+#close {
     width: 30px;
     height: 30px;
     border-radius: 50%;
@@ -382,18 +407,21 @@ input[type="checkbox"],
     left: 100px;
     transition: ease-in-out .5s;
 }
-.close{
+
+.close {
     display: none;
 }
-.check{
+
+.check {
     width: 200px;
-    height:200px;
+    height: 200px;
     display: flex;
     align-items: center;
     justify-content: center;
     border: 3px solid var(--text-blue-dark);
     border-radius: 50%;
 }
+
 .wel-msg p {
     font-size: 25px;
     font-weight: bold;
