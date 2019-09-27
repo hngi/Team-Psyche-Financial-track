@@ -100,10 +100,10 @@
                         </table>
                     </div><!--end of first column in .row2-->
 
-                    <div id="show-expense-tbl" class="col-4">
+                    <div id="show-expense-tbl" hidden class="col-4">
                         <div class="expenses-text">
                             <p class="first">Add expenses</p>
-                            <p class="second">When you spend money add it the expense here today</p>
+                            <p class="second">Keep your expenses in check.</p>
                         </div><!--end of heading text-->
 
                         <form role="add-form" method="POST">
@@ -133,6 +133,43 @@
                                 <a class="btn btn-primary btn-block btn2" id="btnReset">RESET</a>
                             </div><!--end of .btns-->
 
+                        </form>
+                        
+                    </div>
+                     <div id="edit-form" hidden class="col-4">
+                        <div class="expenses-text">
+                            <p class="first">Update expenses</p>
+                            <p class="second">Keep your expenses in check.</p>
+                        </div><!--end of heading text-->
+
+                        <form role="edit-form" method="POST">
+                            <div class="form-group">
+                                <label for="expenditure">EXPENDITURE</label>
+                                <input type="text" class="form-control" placeholder="What did you buy?" name="name" required>
+                            </div><!--end of EXPENDITURE form-group-->
+                            <div class="form-group">
+                                <label for="description">DESCRIPTION</label>
+                                <textarea class="form-control" rows="4" name="description" placeholder="How did you spend the money?" required></textarea>
+                            </div><!--end of DESCRIPTION form-group-->
+
+                            <p class="min-char">Minimum Characters: 40</p> 
+
+                            <div class="form-group">
+                                <label for="price">PRICE</label>
+                                <div class="input-group mb-3 input-group-sm">
+                                    <div class="input-group-prepend">
+                                      <span class="input-group-text">NGN</span>
+                                   </div>
+                                   <input type="number" class="form-control" placeholder=5,3556.00 name="price" required>
+                                 </div>
+                            </div><!--end of PRICE form-group-->
+                            <input type="hidden" name="id"/>
+
+                            <div class="btns">
+                                <button type="submit" class="btn btn-primary btn-block btn1">UPDATE</button>
+                                <a class="btn btn-primary btn-block btn2">RESET</a>
+                            </div>
+                            <!--end of .btns-->
                         </form>
                         
                     </div><!--end of second column in .row2-->

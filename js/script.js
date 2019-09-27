@@ -1,14 +1,4 @@
-import { TOKEN_NAME, BASE_URL, getValues, log, Notification, trace, $, $$ } from "./base.js";
-
-//SHOW ADD NEW EXPENSE SECTION
-let show = document.getElementById("new-expenses");
-let showTable = document.getElementById("show-expense-tbl");
-
-showTable.hidden = true;
-
-show.onclick = function() {
-  showTable.hidden = false;
-};
+import { TOKEN_NAME, BASE_URL, getValues, log, Notification, trace, $, $$, setFormValues } from "./base.js";
 
 const api = axios.create({
   baseURL: BASE_URL,
@@ -68,14 +58,8 @@ const expenseFactory = props => {
   return {
     ...props,
     short_description: (/(.{0,15})/g.exec(description)[0] || "") + "...",
-    update() {
-      api
-        .patch(url, { ...props })
-        .then(a => {
-          ExpenseList.set(id, props)
-          renderExpenses([...ExpenseList.values()])
-        })
-        .catch(handleError("Error Updating"));
+    async update() {
+      return api.put(url, { ...props });
     },
     render() {
       const tr = document.createElement("tr");
@@ -90,9 +74,11 @@ const expenseFactory = props => {
         "click",
         evt => {
           if (evt.target === tr.querySelector("[role=edit]")) {
-            const event = new Event('item-update', {  id, bubbles: true });
+            const event = new CustomEvent('item-update', {  
+              detail: { props }, 
+              bubbles: true 
+            });
             tr.dispatchEvent(event);
-
           } else if (evt.target === tr.querySelector("[role=delete]")) {
             this.delete();
           }
@@ -113,55 +99,107 @@ const expenseFactory = props => {
   };
 };
 
-function activeAddForm() {
+function activeForms() {
   const forms = [
-    { 
-      selector: '[role="add-form"]', 
-      endpoint: BASE_URL + '/items',
-      fields: ['name', 'description', 'price'],
+    {
+      formElement: $('[role="add-form"]'),
+      fields: ["name", "description", "price"],
+      handle(fieldValueObject) {
+        createExpenseForUser(fieldValueObject, 1)
+          .then(newExpense => {
+            ExpenseList.set(newExpense.id, newExpense);
+            renderExpenses([...ExpenseList.values()]);
+            this.formElement.reset();
+            notification.make({ text: "Expense added", type: "success" });
+          })
+          .catch(
+            handleError("Can't add an Expense at the moment. Try again later")
+          );
+      }
+    },
+    {
+      formElement: $('[role="edit-form"]'),
+      fields: ["name", "description", "price", "id"],
+      handle(fieldValueObject) {
+        const event = new CustomEvent('update-item', { bubbles: true, detail: fieldValueObject });
+        this.formElement.dispatchEvent(event);
+      }
     }
   ];
 
   forms.forEach((entry) => {
-    const form = $(entry.selector);
-
-    form.addEventListener('submit', (evt) => {
+    entry.formElement.addEventListener('submit', (evt) => {
       evt.preventDefault();
       evt.stopPropagation();
       evt.stopImmediatePropagation();
 
-      const fieldValueMap = getValues(form, entry.fields)
-      createExpenseForUser(Object.fromEntries(fieldValueMap), 1)
-        .then((newExpense) => {
-          ExpenseList.set(newExpense.id, newExpense);
-          renderExpenses([...ExpenseList.values()]);
-          form.reset();
-          notification.make({ text: 'Expense added', type: 'success' });
-        }).catch(handleError("Can't add an Expense at the moment. Try again later"));
+      const fieldValueMap = getValues(entry.formElement, entry.fields)
+      entry.handle(Object.fromEntries(fieldValueMap));
     })
   })
+
+  // reset button
+  let resetBtn = document.getElementById("btnReset");
+  resetBtn.addEventListener('click', () => {
+    $('[role="add-form"]').reset();
+  });
+}
+
+  //SHOW ADD NEW EXPENSE SECTION
+function activeTableActions() {
+  const show = (el) => el.hidden = false
+  const hide = (el) => el.hidden = true
+  const toggle = (el) => el.hidden ? show(el) : hide(el);
+
+  return [show, hide, toggle];
 }
 
 // on page load
 window.addEventListener("load", async () => {
-  activeAddForm();
+  activeForms();
+  const forms = [$("#show-expense-tbl"), $("#edit-form")];
+  const addButton = $('#new-expenses');
+  const [show, hide, toggle] = activeTableActions();
+  const showAddForm = () => { 
+    show(forms[0]);
+    hide(forms[1])
+  }
+  const showUpdateForm = () => {
+    show(forms[1]);
+    hide(forms[0])
+  }
+
+  addButton.addEventListener('click', () => toggle(forms[0]));
 
   // get expenses
   const expenses = await getExpenses()
   expenses.map(expenseFactory).map(e => ExpenseList.set(e.id, e));
   renderExpenses([...ExpenseList.values()]);
+
+  document.addEventListener('item-update', ({ detail: { props }}) => {
+    const current = ExpenseList.get(props.id)
+    const form = $('[role=edit-form]');
+    showUpdateForm();
+
+    setFormValues(form, [
+      { id: current.id },
+      { name: current.name },
+      { description: current.description },
+      { price: current.price },
+    ])
+  })
+
+  document.addEventListener('update-item', ({ detail }) => {
+    const expense = expenseFactory(detail);
+    expense.update().then(a => {
+        ExpenseList.set(parseInt(expense.id), expense);
+        renderExpenses([...ExpenseList.values()]);
+        hide(forms[1])
+        notification.make({ text: 'Expense updated', type: 'success' });
+      }).catch(handleError("Error Updating"));
+  })
 });
 
-window.addEventListener('item-update', (evt) => {
-  log(evt);
-})
-
-// RESET BUTTON
-let resetBtn = document.getElementById("btnReset");
-resetBtn.onclick = function() {
-  document.getElementById("expenditure").placeholder = "Lunch";
-  (document.getElementById("price").placeholder = 5), 3556.0;
-};
 
 window.addEventListener("load", () => {
   verifyAuth();

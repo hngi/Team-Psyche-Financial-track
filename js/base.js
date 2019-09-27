@@ -11,6 +11,15 @@ export const $ = a => document.querySelector(a);
 export const $$ = a => document.querySelectorAll(a);
 
 
+export const setFormValues = (form, fields = []) => {
+  fields.map((object) => {
+    const [name, value] = Object.entries(object)[0] || [];
+    const field = form.querySelector(`[name=${name}]`)
+    if (field) 
+      field.value = value;
+  })
+}
+
 export const getValues = (form, fields = []) => {
   const getInput = (name, form) => {
     const field = form.querySelector(`[name=${name}]`)
