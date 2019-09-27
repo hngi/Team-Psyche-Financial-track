@@ -1,4 +1,4 @@
-import { TOKEN_NAME, BASE_URL, log, trace, $, $$ } from "./base.js";
+import { TOKEN_NAME, BASE_URL, getValues, log, Notification, trace, $, $$ } from "./base.js";
 
 //SHOW ADD NEW EXPENSE SECTION
 let show = document.getElementById("new-expenses");
@@ -18,18 +18,30 @@ const api = axios.create({
   }
 });
 
-const handleError = (msg = "The Error") => err => console.error(msg, err);
+// Expenses List
+const handleError = (text = "The Error") => err => {
+  log(err, "Error")
+  notification.make({ text, type: 'danger' });
+}
+
 const getExpenses = async () => {
   const { data } = await api.get("/items");
-  log(data, "XHR Data");
   return data.data;
 };
+
 const renderExpenses = expenses => {
-  const holder = $("#expenses-list");
+  const holder = $("[role=expenses-list]");
+
   holder.innerHTML = "";
-  expenses.forEach(expense => {
-    holder.append(expense.render());
-  });
+  if (expenses.length > 0) 
+    expenses.forEach(expense => {
+      holder.append(expense.render());
+    });
+  else {
+    holder.innerHTML = `<tr >
+      <td colspan="4" class="text-center font-italic">Seems, like you haven't spent any money yet.</td>
+    </tr>`;
+  }
 };
 
 const createExpenseForUser = async (props, user_id = 0) => {
@@ -37,6 +49,15 @@ const createExpenseForUser = async (props, user_id = 0) => {
   const { data } = await api.post("/items", { ...props, user_id });
   return expenseFactory(data.data);
 };
+
+// setup notifications
+const notification = new Notification();
+document.body.appendChild(notification.getElement());
+window.notification = notification
+
+const ExpenseList = new Map([]);
+
+window.ExpenseList = ExpenseList
 
 const expenseFactory = props => {
   if (!props.id) throw Error("Id property required");
@@ -50,28 +71,32 @@ const expenseFactory = props => {
     update() {
       api
         .patch(url, { ...props })
-        .then(a => console.log(a))
+        .then(a => {
+          ExpenseList.set(id, props)
+          renderExpenses([...ExpenseList.values()])
+        })
         .catch(handleError("Error Updating"));
     },
     render() {
       const tr = document.createElement("tr");
       tr.innerHTML = `
-                <td>${this.name}</td>
-                <td class="blue">${this.price}</td>
-                <td>${this.short_description}</td>
-                <td role="edit"><img src="assets/images/mdi_edit.png"></td>
-                <td role="delete"><img src="assets/images/vector.png"></td>            
-            `;
+        <td>${this.name}</td>
+        <td class="blue">${this.price}</td>
+        <td>${this.short_description}</td>
+        <td><img role="edit" src="assets/images/mdi_edit.png"></td>
+        <td><img role="delete" src="assets/images/vector.png"></td>            
+      `;
       tr.addEventListener(
         "click",
         evt => {
           if (evt.target === tr.querySelector("[role=edit]")) {
-            log("happening");
+            const event = new Event('item-update', {  id, bubbles: true });
+            tr.dispatchEvent(event);
+
           } else if (evt.target === tr.querySelector("[role=delete]")) {
             this.delete();
           }
-        },
-        true
+        }
       );
       return tr;
     },
@@ -79,45 +104,57 @@ const expenseFactory = props => {
       api
         .delete(url)
         .then(() => {
-          console.log("deleting the request");
+          notification.make({ text: 'Expense Deleted', type: 'success' })
+          ExpenseList.delete(id)
+          renderExpenses([ ...ExpenseList.values() ]);
         })
         .catch(handleError("Error deleting"));
     }
   };
 };
 
-var target = document.querySelector("#expenses-list");
-// create an observer instance
-var observer = new MutationObserver(function(mutations) {
-  mutations.forEach(function(mutation) {
-    console.log(mutation.type);
-  });
-});
+function activeAddForm() {
+  const forms = [
+    { 
+      selector: '[role="add-form"]', 
+      endpoint: BASE_URL + '/items',
+      fields: ['name', 'description', 'price'],
+    }
+  ];
 
-observer.observe(target, {
-  attributes: true,
-  childList: true,
-  characterData: true
-});
+  forms.forEach((entry) => {
+    const form = $(entry.selector);
 
-// later, you can stop observing
-observer.disconnect();
+    form.addEventListener('submit', (evt) => {
+      evt.preventDefault();
+      evt.stopPropagation();
+      evt.stopImmediatePropagation();
 
+      const fieldValueMap = getValues(form, entry.fields)
+      createExpenseForUser(Object.fromEntries(fieldValueMap), 1)
+        .then((newExpense) => {
+          ExpenseList.set(newExpense.id, newExpense);
+          renderExpenses([...ExpenseList.values()]);
+          form.reset();
+          notification.make({ text: 'Expense added', type: 'success' });
+        }).catch(handleError("Can't add an Expense at the moment. Try again later"));
+    })
+  })
+}
+
+// on page load
 window.addEventListener("load", async () => {
-  const expenses = await getExpenses();
-  const ExpensesSet = new Set(expenses.map(expenseFactory));
+  activeAddForm();
 
-  renderExpenses([...ExpensesSet.values()]);
-  //expenseFactory))
-  // createExpenseForUser({
-  //     name: 'Testing',
-  //     description: 'Nothing much',
-  //     price: 300.23
-  // }, getUser().id)
-  // .then((a) => ExpensesSet.set(a))
-  // .catch(handleError("Error creating expenses"));
+  // get expenses
+  const expenses = await getExpenses()
+  expenses.map(expenseFactory).map(e => ExpenseList.set(e.id, e));
+  renderExpenses([...ExpenseList.values()]);
 });
-window.expenseFactory = expenseFactory;
+
+window.addEventListener('item-update', (evt) => {
+  log(evt);
+})
 
 // RESET BUTTON
 let resetBtn = document.getElementById("btnReset");

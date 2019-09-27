@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css?family=Poppins&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/dashboard.css">
     <script src="js/axios.min.js" type="text/javascript"></script>
   </head>
@@ -94,36 +95,7 @@
                                     <th></th>
                                 </tr>
                             </thead>
-                            <tbody id="expenses-list">
-                               
-                                <tr>
-                                    <td>New Clothing</td>
-                                    <td class="blue">7400.00</td>
-                                    <td>Today</td>
-                                    <td><img src="assets/images/mdi_edit.png"></td>
-                                    <td><img src="assets/images/vector.png"></td>
-                                </tr>
-                                <tr>
-                                    <td>Transport to Work</td>
-                                    <td class="blue">540.00</td>
-                                    <td>Today</td>
-                                    <td><img src="assets/images/mdi_edit.png"></td>
-                                    <td><img src="assets/images/vector.png"></td>
-                                </tr>   
-                                <tr>
-                                    <td>Cinema Expenses</td>
-                                    <td class="blue">5140.00</td>
-                                    <td>Today</td>
-                                    <td><img src="assets/images/mdi_edit.png"></td>
-                                    <td><img src="assets/images/vector.png"></td>
-                                </tr>  
-                                <tr>
-                                    <td>New iPhone</td>
-                                    <td class="blue">540.00</td>
-                                    <td>Today</td>
-                                    <td><img src="assets/images/mdi_edit.png"></td>
-                                    <td><img src="assets/images/vector.png"></td>
-                                </tr>                                                           
+                            <tbody role="expenses-list">
                             </tbody>
                         </table>
                     </div><!--end of first column in .row2-->
@@ -134,14 +106,14 @@
                             <p class="second">When you spend money add it the expense here today</p>
                         </div><!--end of heading text-->
 
-                        <form action="">
+                        <form role="add-form" method="POST">
                             <div class="form-group">
                                 <label for="expenditure">EXPENDITURE</label>
-                                <input type="text" class="form-control" id="expenditure" placeholder="Lunch" name="expenditure">
+                                <input type="text" class="form-control" placeholder="What did you buy?" name="name" required>
                             </div><!--end of EXPENDITURE form-group-->
                             <div class="form-group">
                                 <label for="description">DESCRIPTION</label>
-                                <textarea class="form-control" rows="4" id="description"></textarea>
+                                <textarea class="form-control" rows="4" name="description" placeholder="How did you spend the money?" required></textarea>
                             </div><!--end of DESCRIPTION form-group-->
 
                             <p class="min-char">Minimum Characters: 40</p> 
@@ -152,7 +124,7 @@
                                     <div class="input-group-prepend">
                                       <span class="input-group-text">NGN</span>
                                    </div>
-                                   <input type="number" class="form-control" id="price" placeholder=5,3556.00 name="price">
+                                   <input type="number" class="form-control" placeholder=5,3556.00 name="price" required>
                                  </div>
                             </div><!--end of PRICE form-group-->
 

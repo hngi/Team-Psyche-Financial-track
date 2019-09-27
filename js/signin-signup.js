@@ -1,4 +1,4 @@
-import { BASE_URL, TOKEN_NAME, trace, log } from "./base.js";
+import { BASE_URL, TOKEN_NAME, trace, log, getValues } from "./base.js";
 
 // MsgBox
 class MessageBox {
@@ -119,21 +119,14 @@ window.addEventListener("load", () => {
   const prepareForm = (form, endpoint, fields, handlers) => evt => {
     evt.preventDefault();
     const [onSuccess, onFail] = handlers;
-    const getInput = (name, form) => {
-      return form ? form.querySelector(`[name=${name}]`) : { value: "" };
-    };
-    const fieldsObj = new Map(
-      fields.map(e => {
-        return [e, getInput(e, form).value];
-      })
-    );
+    const fieldsWithValue =  getValues(form, fields);
     const options = {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         "X-Requested-With": "XMLHttpRequest"
       },
-      body: JSON.stringify(Object.fromEntries(fieldsObj))
+      body: JSON.stringify(Object.fromEntries(fieldsWithValue))
     };
 
     fetch(endpoint, options)

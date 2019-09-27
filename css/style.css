@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Lato|Pacifico|Righteous|Roboto+Condensed|Ubuntu&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Poppins|Lato&display=swap');
 
 body {
     padding: 0%;
@@ -54,4 +54,44 @@ header {
 
 .cover-image {
     object-fit: cover;
+}
+
+.notification {
+    color: #554;
+    background: #cccc;
+    border-radius: 15px 0;
+    padding: .7rem 1.3rem;
+    display: inline-block;
+    position: fixed;
+    right: 0;
+    bottom: 1rem;
+    opacity: 0;
+    z-index: 999;
+    transition: all .3s ease-out;
+}
+
+.notification.swipe-left {
+    opacity: 1;
+    direction: rtl;
+    transform: translateX(-10%);
+}
+
+.notification.is-info {
+    color: #00529B;
+    background-color: #BDE5F8;
+}
+
+.is-success {
+    color: #4F8A10;
+    background-color: #DFF2BF;
+}
+
+.is-warning {
+    color: #9F6000;
+    background-color: #FEEFB3;
+}
+
+.is-danger {
+    color: #D8000C;
+    background-color: #FFD2D2;
 }
