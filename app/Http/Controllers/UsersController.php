@@ -59,13 +59,12 @@ class UsersController extends Controller
      */
     public function login(Request $request)
     {
-
         $request->validate([
             'email' => 'required|string|email',
             'password' => 'required|string',
             'remember_me' => 'boolean',
         ]);
-
+        
         $credentials = request(['email', 'password']);
         if (!Auth::attempt($credentials)) {
             return response()->json([
