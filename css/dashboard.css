@@ -3,7 +3,8 @@ body{
     font-family: 'Poppins', sans-serif;
 }
 
-.top{
+.row{
+    padding:0!important;
     height: 194px;
     background: #818CEE;
     background-size: cover;
@@ -11,9 +12,6 @@ body{
 }
 /* end of styles for .top */
 
-.container{
-    max-width: 1440px;
-}
 .cat-aside{
     float: left;
     margin-top: 85px;
@@ -49,7 +47,10 @@ li a{
     margin-top: -81px;
 }
 .card{
-    width: 252px;
+
+    /* width: 252px;
+    height: 140px; */
+
     border-radius: 14px;
     padding: 1rem 1rem;
 }
@@ -65,17 +66,21 @@ li a{
     color: #3779DC;
     font-size: 23px;
 }
+.scroll{
+    margin-top: -40px;
+}
+
 
 
 /* styles for table and contents */
 .row2{
     margin-top: 30px;
 }
-.col-8{
+.cont{
     background: #fff;
     border-radius: 14px;
-    max-width: 62%;
-    margin-left: 20px;
+    /* max-width: 62%; */
+    /* margin-left: 20px; */
 }
 .tbl-text {
     float: left;
@@ -107,10 +112,10 @@ li a{
 
 
 /* style for .col-4 and form*/
-.col-4{
+.cont4{
     background: #fff;
-    max-width: 33%;
-    margin-left: 20px;
+    /* max-width: 33%; */
+    margin-left:0;
     border-radius: 14px;
     padding-bottom: 20px;
     margin-bottom: 5px;
@@ -152,3 +157,62 @@ button, #btn2{
     box-sizing: border-box;
     border-radius: 12px;
 }
+@media only screen and (max-width: 700px) {
+    .cont{
+        background: #fff;
+        border-radius: 14px;
+        /* max-width: 100%; */
+        margin-left: 20px;
+        margin-right:20px;
+        max-width:100%;
+    }
+    .cont4{
+        background: #fff;
+        /* max-width: 33%; */
+        margin-left:20px;
+        margin-right:20px;
+        border-radius: 14px;
+        padding-bottom: 20px;
+        margin-bottom: 5px;
+        margin-top:50px;
+        max-width:100%;
+
+    }
+    .main-content{
+        z-index:-1;
+        position:relative;
+    }
+    .cat-aside{
+        display:none!important;
+        z-index:2;
+        position:absolute;
+        background-color:#fff;
+        margin-top: 45px;
+    }
+/* .scroll{
+    display:flex;
+    flex-wrap:nowrap;
+    overflow-x:auto;
+    
+}
+.card{
+    flex:0 0 auto;
+} */
+    .scroll{
+        margin-top:-30;
+        overflow-x:scroll;
+        overflow-y:hidden;
+        white-space: wrap;
+
+    }
+    .card{
+
+    }
+    .cards{
+        display:flex;
+        padding-left:0px!important;
+        padding-right:10px!important;
+        /* min-width:100%; */
+    }
+    
+  }
