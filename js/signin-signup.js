@@ -1,4 +1,12 @@
-import { BASE_URL, TOKEN_NAME, trace, log, getValues } from "./base.js";
+import { BASE_URL, TOKEN_NAME, fromEntries, trace, log, getValues } from "./base.js";
+
+const api = axios.create({
+  baseURL: BASE_URL,
+  headers: {
+    "Content-Type": "application/json",
+    "X-Requested-With": "XMLHttpRequest"
+  }
+});
 
 // MsgBox
 class MessageBox {
@@ -76,69 +84,59 @@ window.addEventListener("load", () => {
     slider.toggle();
   });
 
-  const onSuccess = res => {
-    if (res.message === "Unauthorized" || res.errors) {
-      errBox.show("Invalid email/password provided", 5000);
-      throw Error(res.message);
-    }
-    if (res.access_token) {
-      localStorage.setItem(TOKEN_NAME, JSON.stringify(res));
-      window.location = "/dashboard.html";
-    }
-
-    return res;
-  };
-
   const onFail = trace("An error occured");
 
   const forms = [
     {
       selector: "#signInForm",
-      endpoint: BASE_URL + "/login",
+      endpoint: "/login",
       fields: ["email", "password"],
-      handlers: [onSuccess, onFail]
+      handler: promise => {
+        promise
+          .then(({ data }) => {
+            log(data, "The response data");
+            if (data.access_token) {
+              localStorage.setItem(TOKEN_NAME, JSON.stringify(data));
+              window.location = "/dashboard.html";
+            }
+          })
+          .catch(err => {
+            const { data, status } = err.response;
+            if (status === 401) {
+              errBox.show("Invalid email/password provided", 5000);
+              throw Error(data.message);
+            }
+          });
+      }
     },
     {
       selector: "#signUpForm",
-      endpoint: BASE_URL + "/register",
+      endpoint: "/register",
       fields: ["name", "email", "password", "password_confirmation"],
-      handlers: [
-        res => {
-          if (res.errors) if (res.errors.email) msgBox.show(res.errors.email);
+      handler: async res => {
+        if (res.errors) if (res.errors.email) msgBox.show(res.errors.email);
 
-          if (res.message === "Successfully created user!") {
-            msgBox.show("Account created successfully");
-            slider.moveLeft();
-          }
-        },
-        onFail
-      ]
+        if (res.message === "Successfully created user!") {
+          msgBox.show("Account created successfully");
+          slider.moveLeft();
+        }
+      }
     }
   ];
 
-  const prepareForm = (form, endpoint, fields, handlers) => evt => {
+  const prepareForm = (form, endpoint, fields, handlePromise) => evt => {
     evt.preventDefault();
-    const [onSuccess, onFail] = handlers;
-    const fieldsWithValue =  getValues(form, fields);
-    const options = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Requested-With": "XMLHttpRequest"
-      },
-      body: JSON.stringify(Object.fromEntries(fieldsWithValue))
-    };
+    const fieldsPair = getValues(form, fields);
+    const fieldsObject = fromEntries(fieldsPair);
+    const body = JSON.stringify(fieldsObject)
 
-    fetch(endpoint, options)
-      .then(res => res.json())
-      .then(onSuccess)
-      .catch(onFail);
+    handlePromise(api.post(endpoint, body));
   };
 
-  forms.map(({ selector, handlers, endpoint, fields }) => {
+  forms.map(({ selector, handler, endpoint, fields }) => {
     const form = document.querySelector(selector);
     if (form) {
-      const submitForm = prepareForm(form, endpoint, fields, handlers);
+      const submitForm = prepareForm(form, endpoint, fields, handler);
       form.addEventListener("submit", submitForm);
     }
   });

@@ -1,6 +1,6 @@
 // export const BASE_URL = "http://finance-app.test/api/v1";
-// export const BASE_URL = "http://cbf3b88a.ngrok.io/api/v1";
 export const BASE_URL = "https://psyche-server.herokuapp.com/api/v1";
+
 export const log = (x, mes = "Log") => {
   console.log(mes, ":", x);
   return x;
@@ -19,6 +19,10 @@ export const setFormValues = (form, fields = []) => {
       field.value = value;
   })
 }
+// impure function
+export const fromEntries = (fieldsPair) => {
+  return R.fromPairs([...fieldsPair]);
+}
 
 export const getValues = (form, fields = []) => {
   const getInput = (name, form) => {
@@ -32,7 +36,6 @@ export const getValues = (form, fields = []) => {
     })
   );
 }
-
 export class Notification {
   constructor() {
     this.notification = this.createNotif();

@@ -1,4 +1,15 @@
-import { TOKEN_NAME, BASE_URL, getValues, log, Notification, trace, $, $$, setFormValues } from "./base.js";
+import {
+  TOKEN_NAME,
+  BASE_URL,
+  getValues,
+  log,
+  Notification,
+  trace,
+  $,
+  $$,
+  fromEntries,
+  setFormValues
+} from "./base.js";
 
 const api = axios.create({
   baseURL: BASE_URL,
@@ -10,9 +21,9 @@ const api = axios.create({
 
 // Expenses List
 const handleError = (text = "The Error") => err => {
-  log(err, "Error")
-  notification.make({ text, type: 'danger' });
-}
+  log(err, "Error");
+  notification.make({ text, type: "danger" });
+};
 
 const getExpenses = async () => {
   const { data } = await api.get("/items");
@@ -23,7 +34,7 @@ const renderExpenses = expenses => {
   const holder = $("[role=expenses-list]");
 
   holder.innerHTML = "";
-  if (expenses.length > 0) 
+  if (expenses.length > 0)
     expenses.forEach(expense => {
       holder.append(expense.render());
     });
@@ -43,11 +54,10 @@ const createExpenseForUser = async (props, user_id = 0) => {
 // setup notifications
 const notification = new Notification();
 document.body.appendChild(notification.getElement());
-window.notification = notification
+window.notification = notification;
 
 const ExpenseList = new Map([]);
-
-window.ExpenseList = ExpenseList
+const [showPreloader, hidePreloader] = activePreloaders();
 
 const expenseFactory = props => {
   if (!props.id) throw Error("Id property required");
@@ -70,29 +80,26 @@ const expenseFactory = props => {
         <td><img role="edit" src="assets/images/mdi_edit.png"></td>
         <td><img role="delete" src="assets/images/vector.png"></td>            
       `;
-      tr.addEventListener(
-        "click",
-        evt => {
-          if (evt.target === tr.querySelector("[role=edit]")) {
-            const event = new CustomEvent('item-update', {  
-              detail: { props }, 
-              bubbles: true 
-            });
-            tr.dispatchEvent(event);
-          } else if (evt.target === tr.querySelector("[role=delete]")) {
-            this.delete();
-          }
+      tr.addEventListener("click", evt => {
+        if (evt.target === tr.querySelector("[role=edit]")) {
+          const event = new CustomEvent("show-edit-form", {
+            detail: { props },
+            bubbles: true
+          });
+          tr.dispatchEvent(event);
+        } else if (evt.target === tr.querySelector("[role=delete]")) {
+          this.delete();
         }
-      );
+      });
       return tr;
     },
     delete() {
       api
         .delete(url)
         .then(() => {
-          notification.make({ text: 'Expense Deleted', type: 'success' })
-          ExpenseList.delete(id)
-          renderExpenses([ ...ExpenseList.values() ]);
+          ExpenseList.delete(id);
+          renderExpenses([...ExpenseList.values()]);
+          notification.make({ text: "Expense Deleted", type: "success" });
         })
         .catch(handleError("Error deleting"));
     }
@@ -105,7 +112,8 @@ function activeForms() {
       formElement: $('[role="add-form"]'),
       fields: ["name", "description", "price"],
       handle(fieldValueObject) {
-        createExpenseForUser(fieldValueObject, 1)
+        showPreloader("add-form");
+        createExpenseForUser(fieldValueObject, getUser().id)
           .then(newExpense => {
             ExpenseList.set(newExpense.id, newExpense);
             renderExpenses([...ExpenseList.values()]);
@@ -114,42 +122,46 @@ function activeForms() {
           })
           .catch(
             handleError("Can't add an Expense at the moment. Try again later")
-          );
+          )
+          .finally(() => hidePreloader("add-form"));
       }
     },
     {
       formElement: $('[role="edit-form"]'),
       fields: ["name", "description", "price", "id"],
       handle(fieldValueObject) {
-        const event = new CustomEvent('update-item', { bubbles: true, detail: fieldValueObject });
+        const event = new CustomEvent("update-item", {
+          bubbles: true,
+          detail: fieldValueObject
+        });
         this.formElement.dispatchEvent(event);
       }
     }
   ];
 
-  forms.forEach((entry) => {
-    entry.formElement.addEventListener('submit', (evt) => {
+  forms.forEach(entry => {
+    entry.formElement.addEventListener("submit", evt => {
       evt.preventDefault();
       evt.stopPropagation();
       evt.stopImmediatePropagation();
 
-      const fieldValueMap = getValues(entry.formElement, entry.fields)
-      entry.handle(Object.fromEntries(fieldValueMap));
-    })
-  })
+      const fieldValueMap = getValues(entry.formElement, entry.fields);
+      entry.handle(fromEntries(fieldValueMap));
+    });
+  });
 
   // reset button
   let resetBtn = document.getElementById("btnReset");
-  resetBtn.addEventListener('click', () => {
+  resetBtn.addEventListener("click", () => {
     $('[role="add-form"]').reset();
   });
 }
 
-  //SHOW ADD NEW EXPENSE SECTION
+//SHOW ADD NEW EXPENSE SECTION
 function activeTableActions() {
-  const show = (el) => el.hidden = false
-  const hide = (el) => el.hidden = true
-  const toggle = (el) => el.hidden ? show(el) : hide(el);
+  const show = el => (el.hidden = false);
+  const hide = el => (el.hidden = true);
+  const toggle = el => (el.hidden ? show(el) : hide(el));
 
   return [show, hide, toggle];
 }
@@ -158,51 +170,79 @@ function activeTableActions() {
 window.addEventListener("load", async () => {
   activeForms();
   const forms = [$("#show-expense-tbl"), $("#edit-form")];
-  const addButton = $('#new-expenses');
+  const addButton = $("#new-expenses");
   const [show, hide, toggle] = activeTableActions();
-  const showAddForm = () => { 
+  const showAddForm = () => {
     show(forms[0]);
-    hide(forms[1])
-  }
+    hide(forms[1]);
+  };
   const showUpdateForm = () => {
     show(forms[1]);
-    hide(forms[0])
-  }
+    hide(forms[0]);
+  };
 
-  addButton.addEventListener('click', () => toggle(forms[0]));
+  addButton.addEventListener("click", () => {
+    hide(forms[1])
+    toggle(forms[0]) 
+  });
 
   // get expenses
-  const expenses = await getExpenses()
+  const expenses = await getExpenses();
+  hidePreloader("table");
   expenses.map(expenseFactory).map(e => ExpenseList.set(e.id, e));
   renderExpenses([...ExpenseList.values()]);
 
-  document.addEventListener('item-update', ({ detail: { props }}) => {
-    const current = ExpenseList.get(props.id)
-    const form = $('[role=edit-form]');
+  api.get('/items/info').then(({ data }) => {
+    for(const [period, value] of Object.entries(data)) {
+      const element = $(`[data-${period}]`)
+      if (element) element.innerText = value;
+    }
+  })
+
+  document.addEventListener("show-edit-form", ({ detail: { props } }) => {
+    const current = ExpenseList.get(props.id);
+    const form = $("[role=edit-form]");
     showUpdateForm();
 
-    setFormValues(form, [
-      { id: current.id },
-      { name: current.name },
-      { description: current.description },
-      { price: current.price },
-    ])
-  })
+    if (current)
+      setFormValues(form, [
+        { id: current.id },
+        { name: current.name },
+        { description: current.description },
+        { price: current.price }
+      ]);
+  });
 
-  document.addEventListener('update-item', ({ detail }) => {
+  document.addEventListener("update-item", ({ detail }) => {
+    showPreloader("update-form");
     const expense = expenseFactory(detail);
-    expense.update().then(a => {
+    expense
+      .update()
+      .then(a => {
         ExpenseList.set(parseInt(expense.id), expense);
         renderExpenses([...ExpenseList.values()]);
-        hide(forms[1])
-        notification.make({ text: 'Expense updated', type: 'success' });
-      }).catch(handleError("Error Updating"));
-  })
+        forms.forEach(hide);
+        notification.make({ text: "Expense updated", type: "success" });
+      })
+      .catch(handleError("Error Updating"))
+      .finally(() => hidePreloader("update-form"));
+  });
 });
 
+function activePreloaders() {
+  const trigger = cond => value => {
+    const preloaders = Array.from($$(".preloader"));
+    const match = preloaders.find(
+      e => e.getAttribute("data-preloader") === value
+    );
+    if (match) match.hidden = cond;
+  };
+
+  return [trigger(false), trigger(true)];
+}
 
 window.addEventListener("load", () => {
-  verifyAuth();
+  // verifyAuth();
   // logout
   $("[role=logout]").addEventListener("click", logout);
 });
@@ -215,9 +255,11 @@ function logout() {
 function getToken() {
   return auth("access_token");
 }
+
 function getUser() {
   return auth("user");
 }
+
 function auth(prop) {
   try {
     return JSON.parse(localStorage.getItem(TOKEN_NAME))[prop];
@@ -228,8 +270,8 @@ function auth(prop) {
 
 function verifyAuth() {
   if (!getToken()) {
-    // window.location = "/login.html?token=false";
+    // window.location.replace("/login.html?token=false");
   }
 }
 
-// setInterval(verifyAuth, 2000);
+setInterval(verifyAuth, 2000);
