@@ -9,6 +9,22 @@ use Illuminate\Http\Request;
 
 class ItemsController extends Controller
 {
+    public function counts() {
+        $user = auth('api')->user();
+        $weekly = Item::where('user_id', $user->id)->whereBetween('created_at', [
+            Carbon::now()->startOfWeek(), 
+            Carbon::now()->endOfWeek()
+            ])->sum('price');
+
+        $monthly = Item::where('user_id', $user->id)->whereBetween('created_at', [
+            Carbon::now()->startOfWeek(), 
+            Carbon::now()->endOfWeek()
+        ])->sum('price');
+
+        $yearly = Item::where('user_id', $user->id)->where('created_at', '>=', Carbon::now()->year)->sum('price');
+
+        return response()->json(compact('weekly', 'monthly', 'yearly'));
+    }
     /**
      * Display a listing of the resource.
      *
@@ -17,15 +33,22 @@ class ItemsController extends Controller
     public function index(Request $request)
     {
         // $page = $request->has('page') ? $request->query('page') : 1;
-        $items = Item::orderBy('created_at', 'desc')->paginate(10);
-        if ($items) {
-            return ItemResource::collection($items);
-        } else {
-            return response()->json([
-                'message' => 'Items not created',
-            ], 404);
+        if ($user = auth('api')->user()) {
+            $items = Item::where('user_id', $user->id)
+                ->orderBy('created_at', 'desc')->paginate(10);
+    
+            if ($items) {
+                return ItemResource::collection($items);
+            } else {
+                return response()->json([
+                    'message' => 'Items not created',
+                ], 404);
+            }
         }
 
+        return response()->json([
+            'message' => 'Unauthorized',
+        ], 401);
     }
 
     /**
