@@ -26,7 +26,7 @@ body{
 
 h4 {
     font-size: 3rem;
-    margin-bottom: 15px;
+    margin-bottom: 2rem;
 }
 
 .cat-list li {
@@ -75,7 +75,7 @@ h4 {
 }
 
 .pack-cards > .card {
-    flex: 1 0 250px;
+    flex: 1 0 200px;
 }
 
 .card {
@@ -214,12 +214,12 @@ h4 {
     }
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 908px) {
     .cat-aside {
         left: 0;
         position: fixed;
         top: 0;
-        width: 200px;
+        min-width: 200px;
         padding: 1.5rem;
         z-index: 20;
         background: white;
