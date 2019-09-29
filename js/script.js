@@ -11,14 +11,6 @@ import {
   setFormValues
 } from "./base.js";
 
-const api = axios.create({
-  baseURL: BASE_URL,
-  headers: {
-    Authorization: "Bearer " + getToken(),
-    "Content-Type": "application/json"
-  }
-});
-
 // Expenses List
 const handleError = (text = "The Error") => err => {
   log(err, "Error");
@@ -26,7 +18,7 @@ const handleError = (text = "The Error") => err => {
 };
 
 const getExpenses = async () => {
-  const { data } = await api.get("/items");
+  const { data } = await Auth.api.get("/items");
   return data.data;
 };
 
@@ -47,10 +39,50 @@ const renderExpenses = expenses => {
 
 const createExpenseForUser = async (props, user_id = 0) => {
   if (!user_id) throw Error("user_id property required");
-  const { data } = await api.post("/items", { ...props, user_id });
-  CustomEvents.fire('getCalculations');
+  const { data } = await Auth.api.post("/items", { ...props, user_id });
+  CustomEvents.fire("getCalculations");
   return expenseFactory(data.data);
 };
+
+const Auth = (() => {
+  const auth = (prop) => {
+    try {
+      return JSON.parse(localStorage.getItem(TOKEN_NAME))[prop];
+    } catch (x) {
+      return false;
+    }
+  }
+
+  const willLogout = () => {
+    localStorage.removeItem(TOKEN_NAME);
+    window.location.replace("/login.html");
+  };
+
+  const getToken = () => {
+    return auth("access_token");
+  }
+
+  return {
+    logout() {
+      willLogout();
+    },
+    getUser() {
+      return auth("user");
+    },
+    api: axios.create({
+      baseURL: BASE_URL,
+      headers: {
+        Authorization: "Bearer " + getToken(),
+        "Content-Type": "application/json"
+      }
+    }),
+    verify() {
+      if (!getToken()) {
+        window.location.replace("/login.html?token=false");
+      }
+    }
+  };
+})();
 
 // setup notifications
 const notification = new Notification();
@@ -70,14 +102,14 @@ const expenseFactory = props => {
     ...props,
     short_description: (/(.{0,15})/g.exec(description)[0] || "") + "...",
     async update() {
-      return api.put(url, { ...props });
+      return Auth.api.put(url, { ...props });
     },
     render() {
       const tr = document.createElement("tr");
       tr.innerHTML = `
         <td>${this.name}</td>
         <td class="blue">${this.price}</td>
-        <td>${this.short_description}</td>
+        <td title="${this.description}">${this.short_description}</td>
         <td><img role="edit" src="assets/images/mdi_edit.png"></td>
         <td><img role="delete" src="assets/images/vector.png"></td>            
       `;
@@ -95,13 +127,13 @@ const expenseFactory = props => {
       return tr;
     },
     delete() {
-      api
+      Auth.api
         .delete(url)
         .then(() => {
           ExpenseList.delete(id);
           renderExpenses([...ExpenseList.values()]);
           notification.make({ text: "Expense Deleted", type: "success" });
-          CustomEvents.fire('getCalculations')
+          CustomEvents.fire("getCalculations");
         })
         .catch(handleError("Error deleting"));
     }
@@ -115,7 +147,7 @@ function activeForms() {
       fields: ["name", "description", "price"],
       handle(fieldValueObject) {
         showPreloader("add-form");
-        createExpenseForUser(fieldValueObject, getUser().id)
+        createExpenseForUser(fieldValueObject, Auth.getUser().id)
           .then(newExpense => {
             ExpenseList.set(newExpense.id, newExpense);
             renderExpenses([...ExpenseList.values()]);
@@ -181,16 +213,16 @@ window.addEventListener("load", async () => {
     show(forms[1]);
     hide(forms[0]);
   };
-  
+
   const addButton = $("#new-expenses");
   const closeButton = $("[role=close-form]");
-  
+
   closeButton.addEventListener("click", () => {
     forms.map(hide);
-  })
+  });
   addButton.addEventListener("click", () => {
-    hide(forms[1])
-    toggle(forms[0]) 
+    hide(forms[1]);
+    toggle(forms[0]);
   });
 
   // get expenses
@@ -220,7 +252,7 @@ window.addEventListener("load", async () => {
     expense
       .update()
       .then(a => {
-        CustomEvents.fire('getCalculations')
+        CustomEvents.fire("getCalculations");
         ExpenseList.set(parseInt(expense.id), expense);
         renderExpenses([...ExpenseList.values()]);
         forms.forEach(hide);
@@ -229,12 +261,11 @@ window.addEventListener("load", async () => {
       .catch(handleError("Error Updating"))
       .finally(() => hidePreloader("update-form"));
   });
-
 });
 
 // get calculations
 document.addEventListener("getCalculations", () => {
-  api.get("/items/info").then(({ data }) => {
+  Auth.api.get("/items/info").then(({ data }) => {
     for (const [period, value] of Object.entries(data)) {
       const element = $(`[data-${period}]`);
       if (element) element.innerText = value;
@@ -255,48 +286,25 @@ function activePreloaders() {
 }
 
 window.addEventListener("load", () => {
-  verifyAuth();
+  Auth.verify();
   // logout
-  $("[role=logout]").addEventListener("click", logout);
+  $("[role=logout]").addEventListener("click", Auth.logout);
 });
 
-const eventNames = ['getCalculations'];
-const pairEvents = eventName => [eventName, new CustomEvent(eventName, { bubbles: true })];
-const CustomEvents = { 
+const eventNames = ["getCalculations"];
+const pairEvents = eventName => [
+  eventName,
+  new CustomEvent(eventName, { bubbles: true })
+];
+const CustomEvents = {
   get events() {
-    return R.fromPairs(R.map(pairEvents, eventNames))
+    return R.fromPairs(R.map(pairEvents, eventNames));
   },
   fire(name) {
     document.body.dispatchEvent(CustomEvents.events[name]);
-  } 
-}
-
-CustomEvents.fire('getCalculations');
-
-function logout() {
-  localStorage.removeItem(TOKEN_NAME);
-  window.location.replace("/login.html");
-}
-function getToken() {
-  return auth("access_token");
-}
-
-function getUser() {
-  return auth("user");
-}
-
-function auth(prop) {
-  try {
-    return JSON.parse(localStorage.getItem(TOKEN_NAME))[prop];
-  } catch (x) {
-    return false;
   }
-}
+};
 
-function verifyAuth() {
-  if (!getToken()) {
-    window.location.replace("/login.html?token=false");
-  }
-}
+CustomEvents.fire("getCalculations");
 
-setInterval(verifyAuth, 2000);
+setInterval(Auth.verify, 2000);
