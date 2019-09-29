@@ -48,6 +48,7 @@ const renderExpenses = expenses => {
 const createExpenseForUser = async (props, user_id = 0) => {
   if (!user_id) throw Error("user_id property required");
   const { data } = await api.post("/items", { ...props, user_id });
+  CustomEvents.fire('getCalculations');
   return expenseFactory(data.data);
 };
 
@@ -100,6 +101,7 @@ const expenseFactory = props => {
           ExpenseList.delete(id);
           renderExpenses([...ExpenseList.values()]);
           notification.make({ text: "Expense Deleted", type: "success" });
+          CustomEvents.fire('getCalculations')
         })
         .catch(handleError("Error deleting"));
     }
@@ -170,7 +172,6 @@ function activeTableActions() {
 window.addEventListener("load", async () => {
   activeForms();
   const forms = [$("#show-expense-tbl"), $("#edit-form")];
-  const addButton = $("#new-expenses");
   const [show, hide, toggle] = activeTableActions();
   const showAddForm = () => {
     show(forms[0]);
@@ -180,7 +181,13 @@ window.addEventListener("load", async () => {
     show(forms[1]);
     hide(forms[0]);
   };
-
+  
+  const addButton = $("#new-expenses");
+  const closeButton = $("[role=close-form]");
+  
+  closeButton.addEventListener("click", () => {
+    forms.map(hide);
+  })
   addButton.addEventListener("click", () => {
     hide(forms[1])
     toggle(forms[0]) 
