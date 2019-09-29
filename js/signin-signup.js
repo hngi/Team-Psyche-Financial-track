@@ -1,4 +1,4 @@
-import { BASE_URL, TOKEN_NAME, fromEntries, trace, log, getValues } from "./base.js";
+import { BASE_URL, TOKEN_NAME, Notification, fromEntries, trace, log, getValues, $ } from "./base.js";
 
 const api = axios.create({
   baseURL: BASE_URL,
@@ -8,30 +8,10 @@ const api = axios.create({
   }
 });
 
-// MsgBox
-class MessageBox {
-  constructor(element, type = "info") {
-    this.box = element;
-    this.type = type !== "info" ? "#FF8282" : "#5eccf1";
-  }
-
-  show(msg = "", delay = 10000) {
-    this.box.textContent = msg;
-    this.box.classList.add("misc");
-    this.box.style.background = this.type;
-
-    setTimeout(() => {
-      this.hide();
-    }, delay);
-  }
-
-  hide() {
-    this.box.classList.remove("misc");
-  }
-}
-
-const msgBox = new MessageBox(document.getElementById("error-box"));
-const errBox = new MessageBox(document.getElementById("error-box"), "error");
+const notif = new Notification()
+document.body.append(notif.notification);
+const errBox = (text, duration = 4000) => notif.make({ text, duration, type: 'danger'})
+const msgBox = (text, duration = 4000) => notif.make({ text, duration, type: 'success'})
 
 class Slider {
   constructor() {
@@ -88,7 +68,7 @@ window.addEventListener("load", () => {
 
   const forms = [
     {
-      selector: "#signInForm",
+      formEl: $("#signInForm"),
       endpoint: "/login",
       fields: ["email", "password"],
       handler: promise => {
@@ -101,25 +81,49 @@ window.addEventListener("load", () => {
             }
           })
           .catch(err => {
-            const { data, status } = err.response;
+            const { data, status } = err.response || { data: '', status: 0 };
+
             if (status === 401) {
-              errBox.show("Invalid email/password provided", 5000);
+              errBox("Invalid email/password provided", 5000);
               throw Error(data.message);
+              return
             }
+            
+            errBox("An unexpected error occured!, please try again later");
           });
       }
     },
     {
-      selector: "#signUpForm",
+      formEl: $("#signUpForm"),
       endpoint: "/register",
       fields: ["name", "email", "password", "password_confirmation"],
-      handler: async res => {
-        if (res.errors) if (res.errors.email) msgBox.show(res.errors.email);
-
-        if (res.message === "Successfully created user!") {
-          msgBox.show("Account created successfully");
-          slider.moveLeft();
-        }
+      handler(promise) {
+        promise.then(({ data: res }) => {
+          if (res.message === "Successfully created user!") {
+            msgBox("Account created successfully");
+            slider.moveLeft();
+          }
+        }).catch((error) => {
+          isResponseError(error, ({ message, errors }) => {
+            if (errors) {
+              let count = 0
+              const findMessages = ([name, messages]) => {
+                R.map((message) => {                   
+                  if (/(already been taken)/g.test(message)) {
+                    count += 1;
+                    errBox('Email already taken')
+                    return 
+                  }
+                }, messages)
+              }
+              R.map(findMessages, R.toPairs(errors))
+              counts == 0 && errBox(message);
+              return
+            }
+            errBox('Something went wrong, Please try again');
+          })
+          console.error('Unexpected failure!');
+        })
       }
     }
   ];
@@ -133,15 +137,18 @@ window.addEventListener("load", () => {
     handlePromise(api.post(endpoint, body));
   };
 
-  forms.map(({ selector, handler, endpoint, fields }) => {
-    const form = document.querySelector(selector);
-    if (form) {
-      const submitForm = prepareForm(form, endpoint, fields, handler);
-      form.addEventListener("submit", submitForm);
+  forms.map((form) => {
+    const { formEl, endpoint, fields } = form
+    if (formEl) {
+      const submitForm = prepareForm(formEl, endpoint, fields, form.handler.bind(form));
+      formEl.addEventListener("submit", submitForm);
     }
   });
 });
 
+function isResponseError (err, closure) {
+  if (err.response) closure(err.response.data);
+}
 /* -----------------------------------INPUT VALIDATION FOR PASSWORD--------------------------------------------------- */
 const mainPassword = document.getElementById("password");
 const confirmPassword = document.getElementById("confirm-password");

@@ -1,5 +1,6 @@
 // export const BASE_URL = "http://finance-app.test/api/v1";
-export const BASE_URL = "https://psyche-server.herokuapp.com/api/v1";
+// export const BASE_URL = "https://psyche-server.herokuapp.com/api/v1";
+export const BASE_URL = "https://teamgravity.africa/psyche/api/v1";
 
 export const log = (x, mes = "Log") => {
   console.log(mes, ":", x);
@@ -66,7 +67,7 @@ export class Notification {
 
   make(opts = {}) {
     const { text, type, duration } = { type: 'info', duration: 4000, ...opts }
-
+        
     this.changeText(text);
     this.changeType(type);
     setTimeout(() => {

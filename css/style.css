@@ -72,7 +72,7 @@ header {
 
 .notification.swipe-left {
     opacity: 1;
-    direction: rtl;
+    direction: ltr;
     transform: translateX(-10%);
 }
 

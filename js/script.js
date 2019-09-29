@@ -187,17 +187,11 @@ window.addEventListener("load", async () => {
   });
 
   // get expenses
+
   const expenses = await getExpenses();
   hidePreloader("table");
   expenses.map(expenseFactory).map(e => ExpenseList.set(e.id, e));
   renderExpenses([...ExpenseList.values()]);
-
-  api.get('/items/info').then(({ data }) => {
-    for(const [period, value] of Object.entries(data)) {
-      const element = $(`[data-${period}]`)
-      if (element) element.innerText = value;
-    }
-  })
 
   document.addEventListener("show-edit-form", ({ detail: { props } }) => {
     const current = ExpenseList.get(props.id);
@@ -219,6 +213,7 @@ window.addEventListener("load", async () => {
     expense
       .update()
       .then(a => {
+        CustomEvents.fire('getCalculations')
         ExpenseList.set(parseInt(expense.id), expense);
         renderExpenses([...ExpenseList.values()]);
         forms.forEach(hide);
@@ -226,6 +221,17 @@ window.addEventListener("load", async () => {
       })
       .catch(handleError("Error Updating"))
       .finally(() => hidePreloader("update-form"));
+  });
+
+});
+
+// get calculations
+document.addEventListener("getCalculations", () => {
+  api.get("/items/info").then(({ data }) => {
+    for (const [period, value] of Object.entries(data)) {
+      const element = $(`[data-${period}]`);
+      if (element) element.innerText = value;
+    }
   });
 });
 
@@ -242,16 +248,28 @@ function activePreloaders() {
 }
 
 window.addEventListener("load", () => {
-  // verifyAuth();
+  verifyAuth();
   // logout
   $("[role=logout]").addEventListener("click", logout);
 });
+
+const eventNames = ['getCalculations'];
+const pairEvents = eventName => [eventName, new CustomEvent(eventName, { bubbles: true })];
+const CustomEvents = { 
+  get events() {
+    return R.fromPairs(R.map(pairEvents, eventNames))
+  },
+  fire(name) {
+    document.body.dispatchEvent(CustomEvents.events[name]);
+  } 
+}
+
+CustomEvents.fire('getCalculations');
 
 function logout() {
   localStorage.removeItem(TOKEN_NAME);
   window.location.replace("/login.html");
 }
-
 function getToken() {
   return auth("access_token");
 }
@@ -270,7 +288,7 @@ function auth(prop) {
 
 function verifyAuth() {
   if (!getToken()) {
-    // window.location.replace("/login.html?token=false");
+    window.location.replace("/login.html?token=false");
   }
 }
 
