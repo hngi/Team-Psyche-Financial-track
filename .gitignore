@@ -1,0 +1,5 @@
+bootstrap/*
+storage/*
+vendor/*
+.vscode/*
+.env

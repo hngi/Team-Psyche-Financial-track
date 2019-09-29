@@ -4,56 +4,37 @@ body {
     padding: 0%;
     margin: 0%;
     font-family: 'Lato';
+    --text-blue: #727fff;
+    --text-blue-dark: #3E64FF;
+    background: url('../assets/images/Ellipse.png') no-repeat bottom left /  200px;
 }
 
+/* navigation */
 header {
-    background-color: #ffffff;
+    background-color: transparent;
 }
-.navbar{
-    padding: 0rem 1rem !important;
-}
+
 .navbar-brand {
     font-family: Poppins;
     font-style: normal;
     font-weight: bold;
     font-size: 40px;
-    color: #3E64FF !important;
     margin-left: 0;
 }
 
-img {
-    height: 65px;
-    width: 200px;
-    margin-left: 3px;
+.navbar-nav .nav-link {
+    margin-left: 1.5rem;
+    color: var(--text-blue);    
 }
 
-.nav-link {
-    font-size: 17px;
-    margin: 15px;
-    color: #727fff !important;
-    font-family: 'Poppins';
+.navbar-nav .nav-link:hover {
+    color: var(--text-blue-dark);
 }
 
-.nav-link:hover {
-    color: #3E64FF !important;
+.navbar-nav .nav-link.active {
+    color: var(--text-blue-dark);
 }
 
-.active .nav-link {
-    color: #3E64FF !important;
-}
-
-.menu-right-btn {
-    padding: 13px 40px;
-    /* margin-right: 30%; */
-    margin-left: 5px;
-    background-color: transparent;
-    transition-property: all 300ms ease-in;
-}
-
-.menu-right-btn:hover {
-    color: white !important;
-    background-color:#727fff ;
-}
 .signin-btn{
     color: #727fff !important;
     border: 1px solid #727fff !important;
@@ -61,4 +42,16 @@ img {
 .signup-btn{
     color: #ffffff !important;
     background-color: #727fff !important;
+}
+/* nav end */
+.text-blue {
+    color: var(--text-blue);
+}
+
+.text-blue-dark { 
+    color: var(--text-blue-dark);
+}
+
+.cover-image {
+    object-fit: cover;
 }
