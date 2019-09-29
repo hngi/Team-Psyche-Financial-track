@@ -216,17 +216,29 @@ window.addEventListener("load", async () => {
 
   const addButton = $("#new-expenses");
   const closeButton = $("[role=close-form]");
+  
+  // toggles menu
+  document.addEventListener('click', ({ target }) => {
+    if (target.getAttribute('role') == 'toggle-menu')
+      $('.cat-aside').classList.toggle('hide-menu');
+  })
 
   closeButton.addEventListener("click", () => {
     forms.map(hide);
   });
+  
+  const state = {
+    addButton: false,
+  }
+
   addButton.addEventListener("click", () => {
+    state.addButton = !state.addButton
+    addButton.innerText = state.addButton ? '-' : '+'
     hide(forms[1]);
     toggle(forms[0]);
   });
 
   // get expenses
-
   const expenses = await getExpenses();
   hidePreloader("table");
   expenses.map(expenseFactory).map(e => ExpenseList.set(e.id, e));

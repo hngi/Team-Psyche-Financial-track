@@ -31,14 +31,14 @@
 
   <body>
     <div class="top">
-      <div class="container mx-auto px-3 md:px-4 pt-5">
-        <button class="md:hidden">
-          -- ACTIVE --
+      <div class="container mx-auto flex justify-between px-3 md:px-4 pt-5 pb-24">
+        <hgroup style="line-height: 20px">
+          <small class="text-2xl text-blue">PSYCHE</small>
+          <div class="text-3xl">FINANCE APP</div>
+        </hgroup>
+        <button class="md:hidden text-lg" role="toggle-menu">
+          -MENU-
         </button>
-        <h3 class="text-2xl" style="line-height: 20px">
-          <small class="text-sm">PSYCHE</small>
-          <br /><span>FINANCE APP</span>
-        </h3>
       </div>
     </div>
     <!--end of .top-->
@@ -48,6 +48,14 @@
         <aside
           class="md:absolute lg:relative hide-menu cat-aside w-1/5 lg:mt-20"
         >
+        <!-- for mobile -->
+        <div class="sm:hidden py-5">
+            <hgroup class="mb-5" style="line-height: 20px">
+            <small class="text-2xl text-blue">PSYCHE</small>
+            <div class="text-3xl">FINANCE APP</div>
+            </hgroup>
+        </div>
+        <!-- for mobile -->
           <h4 class="text-2xl">Categories</h4>
           <div class="cat-list">
             <ul class="flex flex-col items-start">
@@ -60,11 +68,12 @@
           </div>
           <!--end of .cat-list-->
         </aside>
+        <div class="backdrop" role="toggle-menu"></div>
         <!--end of .cat-aside-->
 
         <section class="flex-1 max-w-full flex flex-col">
           <div
-            class="mb-5 -mt-16 -ml-3 -mr-3 md:-mr-0 md:-ml-0 overflow-x-scroll md:overflow-x-visible w-auto"
+            class="mb-3 -mt-16 -ml-3 -mr-3 md:-mr-0 md:-ml-0 overflow-x-scroll md:overflow-x-visible w-auto"
           >
             <div class="flex pl-3 py-2 md:p-0 justify-between pack-cards">
               <!-- <div class="card" hidden>
