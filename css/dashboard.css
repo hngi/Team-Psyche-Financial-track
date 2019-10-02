@@ -142,6 +142,22 @@ h4 {
     font-size: 12px;
     margin-top: -12px;
 }
+.search-input{
+    display: inline-block;
+    width: 200px;
+    margin-bottom: 10px;
+}
+#reset {
+    height: 40px;
+    background: linear-gradient(270deg, #3E64FF 20.25%, #C8CDFF 87.25%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    transition: all .3s ease-out;
+}
+#reset:hover{
+    box-shadow: 0 6px 6px #3e64ff3b;
+}
 .input-group{
     height: 40px;
     border-radius: 10px;
