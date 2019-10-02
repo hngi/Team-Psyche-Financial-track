@@ -31,7 +31,9 @@
 
   <body>
     <div class="top">
-      <div class="container mx-auto flex justify-between px-3 md:px-4 pt-5 pb-24">
+      <div
+        class="container mx-auto flex justify-between px-3 md:px-4 pt-5 pb-24"
+      >
         <hgroup style="line-height: 20px">
           <small class="text-2xl text-blue">PSYCHE</small>
           <div class="text-3xl">FINANCE APP</div>
@@ -48,14 +50,14 @@
         <aside
           class="md:absolute lg:relative hide-menu cat-aside md:2/5 lg:w-1/5 lg:mt-20"
         >
-        <!-- for mobile -->
-        <div class="sm:hidden py-5">
+          <!-- for mobile -->
+          <div class="sm:hidden py-5">
             <hgroup class="mb-5" style="line-height: 20px">
-            <small class="text-2xl text-blue">PSYCHE</small>
-            <div class="text-3xl">FINANCE APP</div>
+              <small class="text-2xl text-blue">PSYCHE</small>
+              <div class="text-3xl">FINANCE APP</div>
             </hgroup>
-        </div>
-        <!-- for mobile -->
+          </div>
+          <!-- for mobile -->
           <h4 class="text-2xl">Categories</h4>
           <div class="cat-list">
             <ul class="flex flex-col items-start">
@@ -102,11 +104,6 @@
             </div>
             <!--end of .card-deck-->
           </div>
-          <div class="search-cont">
-            <input type="text" class = "form-control search-input" placeholder="filter by name" id="searchByName"> <span>OR</span>
-            <input type="number" class = "form-control search-input" name="" id="searchbByNum" placeholder="filter by amount">
-            <button class="btn " id="reset">reset</button>
-          </div>
           <div class="flex flex-col md:flex-row">
             <div
               class="bg-white p-3 shadow-lg rounded-lg w-full sm:w-3/5 order-3 md:order-1"
@@ -124,6 +121,23 @@
                   </button>
                 </div>
               </div>
+              <div class="search-cont">
+                <input
+                  type="text"
+                  class="form-control search-input"
+                  placeholder="filter by name"
+                  id="searchByName"
+                />
+                <input
+                  type="number"
+                  class="form-control search-input md:ml-5"
+                  name=""
+                  id="searchbByNum"
+                  placeholder="filter by amount"
+                />
+                <button class="btn-trans" id="reset">Reset</button>
+              </div>
+
               <section
                 class="-ml-3 -mr-3 lg:w-auto overflow-x-scroll md:overflow-x-visible"
               >
@@ -150,9 +164,8 @@
                 class="bg-white p-3 rounded-lg shadow"
                 hidden
               >
-              <input type="text" placeholder="filter expenses">
+                <input type="text" placeholder="filter expenses" />
                 <hgroup class="expenses-text mb-3">
-                  
                   <p class="text-2xl">Add expenses</p>
                   <p class="text-sm opacity-50">Keep your expenses in check.</p>
                 </hgroup>
