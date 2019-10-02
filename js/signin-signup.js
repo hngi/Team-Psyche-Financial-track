@@ -117,7 +117,7 @@ window.addEventListener("load", () => {
                 }, messages)
               }
               R.map(findMessages, R.toPairs(errors))
-              counts == 0 && errBox(message);
+              count == 0 && errBox(message);
               return
             }
             errBox('Something went wrong, Please try again');
