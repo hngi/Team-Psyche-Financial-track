@@ -8,6 +8,14 @@ const api = axios.create({
   }
 });
 
+// const api = axios.create({
+//   baseURL: "http://2f4aa47e.ngrok.io/api",
+//   headers: {
+//     "Content-Type": "application/json",
+//     "X-Requested-With": "XMLHttpRequest"
+//   }
+// });
+
 const notif = new Notification()
 document.body.append(notif.notification);
 const errBox = (text, duration = 4000) => notif.make({ text, duration, type: 'danger'})
