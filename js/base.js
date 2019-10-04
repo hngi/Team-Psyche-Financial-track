@@ -1,6 +1,9 @@
 // export const BASE_URL = "http://finance-app.test/api/v1";
 // export const BASE_URL = "https://psyche-server.herokuapp.com/api/v1";
-export const BASE_URL = "https://teamgravity.africa/psyche/api/v1";
+// export const BASE_URL = "https://teamgravity.africa/psyche/api/v1";
+export const BASE_URL = "https://psycheapi.herokuapp.com/api/v1";
+// export const BASE_URL = "http://127.0.0.1:8000/api/v1";
+
 
 export const log = (x, mes = "Log") => {
   console.log(mes, ":", x);
